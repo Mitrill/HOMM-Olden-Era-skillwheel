@@ -150,6 +150,39 @@
   @media (max-width: 980px){
     .race-panels .wrap{ grid-template-columns: 1fr; }
   }
+  .subclass-badge {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 25;
+  display: inline-flex;
+  gap: .45rem;
+  align-items: center;
+  padding: .35rem .6rem;
+  border-radius: 10px;
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-bd);
+  color: #e6ebff;
+  font: 600 .95rem/1 Segoe UI, Roboto, Arial, sans-serif;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  user-select: none;
+}
+
+.subclass-badge select {
+  appearance: none;
+  background: #1b1f2a;
+  color: #e6ebff;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 8px;
+  padding: .3rem .55rem;
+  font: 600 .92rem/1 Segoe UI, Roboto, Arial, sans-serif;
+  cursor: pointer;
+}
+.node.highlight-yellow .badge {
+  stroke: #ffd84a !important;
+  filter: drop-shadow(0 0 8px rgba(255,216,74,0.65));
+}
 </style>
 </head>
 <body>
@@ -176,6 +209,12 @@
         <option value="Sylvan">Sylvan</option>
       </select>
     </div>
+	<div id="subclassChip" class="subclass-badge" aria-live="polite" aria-atomic="true">
+  <span class="label" style="opacity:.9; letter-spacing:.02em;">Subclass</span>
+  <select id="subclassSelect">
+    <option value="">— Select —</option>
+  </select>
+</div>
 
     <!-- Center panels for race text -->
     <div class="race-panels" id="racePanels">
@@ -343,6 +382,8 @@ const RING_STROKE = 11;
 /** Separators */
 const SEPARATORS = { show:true, strokeWidth:2.2, outerExtend:0, innerInset:0, dashed:false };
 
+
+
 /** ICONS_CONFIG (edit these paths/texts) */
 const ICONS_CONFIG = {
   outer: {
@@ -423,7 +464,10 @@ const ICONS_CONFIG = {
 	"22":[{icon:"Icons/e1.jpg",name:"Experimenter",desc:"+5 alchemist dust daily. Doubled if the Hero knows Insight."},{icon:"Icons/m1.jpg",name:"Merchant",desc:"The Hero counts as an additional market place when calculating trade prices."}],
 	"23":[{icon:"Icons/v.jpg",name:"Visions",desc:"Shows the exact army composition of any enemy within [300% x Hero sight radius] squares of the Hero."},{icon:"Icons/r.jpg",name:"Reconnaissance",desc:"Removes the fog of war within [200% x Hero radius sight] of the Hero each morning."}]}
 
+
 };
+
+
 
 /* ===== Build DATA from ICONS_CONFIG ===== */
 function buildDataFromConfig(){
@@ -670,6 +714,113 @@ function applyRace(raceName){
 
   new ResizeObserver(()=>{}).observe(host);
 })();
+
+ const subclassSelect = document.getElementById('subclassSelect');
+
+
+  // Define subclasses per race
+  const subclassOptions = {
+	Temple: ['Swashbuckler', 'Paragon', 'Grand Inquisitor', 'Ascendent'],
+	Schism: ['Unbound', 'Unfeeling', 'Unstoppable', 'Unfathomable'],
+	Necropolis: ['Harbinger of Doom', 'Walking Rot', 'Soul Weaver', 'Chronomancer'],
+	Dungeon: ["Balthalzar's Bodyguard", "Silvertongue's Envoy", "Amelchia's Heir", 'Great Merchant'],
+    Hive: ['TBD', 'TBD', 'TBD'],
+    Sylvan: ['TBD', 'TBD', 'TBD']
+  };
+
+  function updateSubclassOptions(race) {
+    // Clear current options
+    subclassSelect.innerHTML = '<option value="">— Select —</option>';
+
+    if (subclassOptions[race]) {
+      subclassOptions[race].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        subclassSelect.appendChild(opt);
+      });
+    }
+  }
+
+  // Update when race changes
+  raceSelect.addEventListener('change', (e) => {
+    updateSubclassOptions(e.target.value);
+  });
+
+  // Initialize (in case default race is pre-selected)
+  updateSubclassOptions(raceSelect.value);
+  
+  /* ===== Subclass skill highlighting logic ===== */
+
+// Map subclass names to arrays of outer skill IDs (e.g. outer10 = sector 10)
+const subclassHighlights = {
+Temple: {
+  Swashbuckler: ["outer12", "outer07", "outer01", "outer11", "outer2"],
+  Paragon: ["outer04", "outer10", "outer19", "outer17", "outer06"],
+  "Grand Inquisitor": ["outer13", "outer14", "outer03", "outer21", "outer23"],
+  Ascendent: ["outer22", "outer20", "outer15", "outer09", "outer16"]
+},
+Schism: {
+  Unbound: ["outer10", "outer07", "outer02", "outer23", "outer16"],
+  Unfeeling: ["outer19", "outer22", "outer12", "outer11", "outer09"],
+  Unstoppable: ["outer14", "outer04", "outer21", "outer15", "outer06"],
+  Unfathomable: ["outer13", "outer03", "outer20", "outer01", "outer17"]
+},
+Necropolis: {
+  "Harbinger of Doom": ["outer03", "outer01", "outer15", "outer23", "outer16"],
+  "Walking Rot": ["outer19", "outer12", "outer11", "outer09", "outer06"],
+  "Soul Weaver": ["outer13", "outer04", "outer21", "outer20", "outer17"],
+  Chronomancer: ["outer14", "outer10", "outer22", "outer02", "outer06"]
+},
+Dungeon: {
+  "Balthalzar's Bodyguard": ["outer19", "outer12", "outer07", "outer11", "outer02"],
+  "Silvertongue's Envoy": ["outer10", "outer03", "outer01", "outer23", "outer16"],
+  "Amelchia's Heir": ["outer04", "outer17", "outer06", "outer21", "outer15"],
+  "Great Merchant": ["outer13", "outer14", "outer22", "outer20", "outer09"]
+},
+ Hive: {
+    TBD: ["outer03", "outer08", "outer12", "outer17", "outer22"],
+    TBD: ["outer05", "outer06", "outer10", "outer14", "outer19"],
+    TBD: ["outer01", "outer04", "outer09", "outer15", "outer21"]
+		},
+Sylvan: {
+    TBD: ["outer02", "outer08", "outer11", "outer18", "outer20"],
+    TBD:  ["outer04", "outer06", "outer10", "outer15", "outer23"],
+    TBD:["outer03", "outer07", "outer09", "outer12", "outer16"]
+  }
+};
+
+// Utility: clear any existing highlights
+function clearHighlights() {
+  document.querySelectorAll('.node.highlight-yellow').forEach(node => {
+    node.classList.remove('highlight-yellow');
+  });
+}
+
+// Utility: apply highlights for given race + subclass
+function applyHighlights(race, subclass) {
+  clearHighlights();
+  const ids = subclassHighlights[race]?.[subclass] || [];
+ids.forEach(id => {
+  // Get sector number (e.g. "02", "12")
+  let sectorNum = id.slice(5);
+  if (sectorNum.length === 1) sectorNum = sectorNum.padStart(2, "0");
+
+  // Match EXACT outer ring nodes (r1sXX-)
+  const match = document.querySelectorAll(`.node[data-id^="r1s${sectorNum}-"]`);
+  match.forEach(node => node.classList.add('highlight-yellow'));
+});
+}
+
+// Hook into subclass dropdown
+subclassSelect.addEventListener('change', e => {
+  const subclass = e.target.value;
+  const race = raceSelect.value;
+  applyHighlights(race, subclass);
+});
+
+// Reapply when race changes (clears any previous highlights)
+raceSelect.addEventListener('change', () => clearHighlights());
 </script>
 </body>
 </html>
