@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HoMM Skill Wheel – Triplets, 2‑state (Hardcoded + Race Panels)</title>
+<style>
+  :root{
+    --bg:#0b0d13;
+    --ring:#222632;
+    --ring2:#1a1e29;
+    --node-outline:#4be29a;
+    --tooltip-bg:#11131a;
+    --tooltip-border:#2c3140;
+    --tooltip-text:#e6ebff;
+    --sep-color:#4b5164;
+    --sep-opacity:.65;
+
+    --hud-bg: rgba(0,0,0,.35);
+    --hud-bd: rgba(255,255,255,.14);
+    --panel-bg: rgba(8,10,16,.72);
+    --panel-bd: rgba(255,255,255,.12);
+    --panel-shadow: 0 18px 60px rgba(0,0,0,.55);
+  }
+  html,body{ height:100%; margin:0; background:var(--bg); color:#e6ebff; font-family: Segoe UI, Roboto, Arial, sans-serif; }
+  .board{
+    position:relative;
+    /* Bigger board so tooltips have room */
+    width: clamp(720px, 99.5vmin, 2400px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    background: radial-gradient(900px 900px at 50% 50%, #111525 0%, #0c0f19 70%, #0a0c14 100%);
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.05), 0 12px 38px rgba(0,0,0,.5);
+    overflow:hidden;
+    user-select:none;
+  }
+  .bg-watermark{
+    position:absolute; inset:0;
+    background-position: center; background-repeat: no-repeat; background-size: contain;
+    opacity: .08; pointer-events: none; filter: saturate(.6) contrast(1.1);
+  }
+  svg{ display:block; width:100%; height:100%; }
+
+  /* Decorative rings (underlay) – thinner */
+  .ring{ fill:none; stroke:var(--ring); stroke-width:11; }
+  .ring:nth-child(odd){ stroke: var(--ring2); }
+
+  /* Separators (under icons) */
+  .seps{ pointer-events:none; }
+  .sep{
+    stroke: var(--sep-color); stroke-opacity: var(--sep-opacity);
+    stroke-width: 2.2; stroke-linecap: round;
+  }
+
+  /* Nodes */
+  .node{ cursor:pointer; }
+  .node .hit{ fill:transparent; stroke:none; pointer-events:all; }
+  .node .badge{
+    fill:none; stroke:transparent; stroke-width:3.2;
+    filter: drop-shadow(0 0 6px rgba(122,255,194,.35));
+    transition: stroke .12s ease, opacity .12s ease;
+    pointer-events:none;
+  }
+  .node .icon{
+    transition: filter .12s ease, transform .12s ease, opacity .12s ease;
+    pointer-events:none;
+  }
+  .node:hover .icon{ transform: scale(1.06); }
+
+  .node.selected .badge { stroke: var(--node-outline); }
+  .node.selected .icon  { filter: saturate(1.1) drop-shadow(0 4px 10px rgba(0,0,0,.35)); opacity:1; }
+  .node:not(.selected) .icon { filter: grayscale(0) contrast(1) brightness(1); opacity:.75; }
+
+  /* Tooltip (smart positioning) */
+  .tooltip{
+    position:absolute; z-index:10; pointer-events:none;
+    min-width: 220px; max-width: min(340px, 80vw);
+    background: var(--tooltip-bg); border:1px solid var(--tooltip-border);
+    color:var(--tooltip-text); padding: .65rem .75rem; border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.45);
+    transform: translateX(-50%);
+    opacity:0; transition: opacity .12s ease; font-size: .92rem;
+  }
+  .tooltip.show{ opacity:1; }
+  .tooltip .t-name{ font-weight:600; margin-bottom:.25rem; color:#f5f8ff; }
+  .tooltip .t-desc{ opacity:.92; line-height:1.25rem; }
+
+  .tooltip::after{
+    content:""; position:absolute; left:50%; transform: translateX(-50%);
+    border:8px solid transparent;
+  }
+  .tooltip[data-pos="top"]::after{ bottom:-8px; border-top-color: var(--tooltip-border); }
+  .tooltip[data-pos="below"]::after{ top:-8px; border-bottom-color: var(--tooltip-border); }
+
+  /* HUD chips (top-left) */
+  .level-badge, .race-badge{
+    position:absolute; left:10px; z-index:25;
+    display:inline-flex; gap:.45rem; align-items:center;
+    padding:.35rem .6rem; border-radius:10px;
+    background:var(--hud-bg); border:1px solid var(--hud-bd);
+    color:#e6ebff; font: 600 .95rem/1 Segoe UI, Roboto, Arial, sans-serif;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    user-select:none;
+  }
+  .level-badge{ top:10px; }
+  .race-badge{ top:54px; } /* sits under Level chip */
+  .level-badge .label{ opacity:.9; letter-spacing:.02em; }
+  .level-badge .note{ margin-left:.25rem; font-weight:500; color:#ffb3b3; opacity:.95; }
+  .level-badge.warn{ border-color:#ff6b6b; box-shadow:0 0 0 1px rgba(255,107,107,.25) inset; }
+
+  .race-badge select{
+    appearance: none;
+    background: #1b1f2a; color:#e6ebff;
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:8px; padding:.3rem .55rem;
+    font: 600 .92rem/1 Segoe UI, Roboto, Arial, sans-serif;
+    cursor:pointer;
+  }
+
+  /* Center race panels */
+  .race-panels{
+    position:absolute; inset:0;
+    display:flex; justify-content:center; align-items:center;
+    pointer-events:none; /* panels handle their own events */
+  }
+  .race-panels .wrap{
+    width: min(50%, 800px);
+    display:grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    pointer-events:none;
+  }
+  .race-panels .panel{
+    background: var(--panel-bg);
+    border:1px solid var(--panel-bd);
+    border-radius: 14px;
+    box-shadow: var(--panel-shadow);
+    min-height: clamp(250px, 26vmin, 250px);
+    padding: 14px 16px;
+    overflow: auto;
+    pointer-events:auto; /* allow text selection & scrolling */
+  }
+  .race-panels h3{
+    margin: 0 0 6px; font-size: 1.05rem; font-weight:700; color:#f1f4ff;
+  }
+  .race-panels p, .race-panels li{
+    color:#cfd6ea; line-height: 1.35rem; margin: 0 0 .6rem;
+  }
+  .race-panels ul{ padding-left: 1.1rem; margin: .2rem 0 .8rem; }
+  .race-panels em{ color:#a0abcc; }
+  @media (max-width: 980px){
+    .race-panels .wrap{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="board" id="wheelHost">
+    <!-- Optional background image; set BACKGROUND_IMAGE in JS -->
+    <div class="bg-watermark" id="bgWatermark"></div>
+
+    <!-- Level chip -->
+    <div id="levelChip" class="level-badge" aria-live="polite" aria-atomic="true">
+      <span class="label">Level</span>
+      <span id="levelValue">0</span>
+      <span id="levelNote" class="note"></span>
+    </div>
+
+    <!-- Race chip -->
+    <div id="raceChip" class="race-badge" aria-live="polite" aria-atomic="true">
+      <span class="label" style="opacity:.9; letter-spacing:.02em;">Race</span>
+      <select id="raceSelect">
+        <option value="Temple">Temple</option>
+        <option value="Schism">Schism</option>
+        <option value="Necropolis">Necropolis</option>
+        <option value="Dungeon">Dungeon</option>
+        <option value="Hive">Hive</option>
+        <option value="Sylvan">Sylvan</option>
+      </select>
+    </div>
+
+    <!-- Center panels for race text -->
+    <div class="race-panels" id="racePanels">
+      <div class="wrap">
+        <section class="panel" id="racePanelLeft"></section>
+        <section class="panel" id="racePanelRight"></section>
+      </div>
+    </div>
+
+    <!-- Main SVG -->
+    <svg viewBox="-600 -600 1200 1200" role="img" aria-label="Skill wheel">
+      <defs id="defs"></defs>
+      <g id="rings"></g>
+      <g id="separators" class="seps"></g>
+      <g id="nodes"></g>
+      <g id="debug"></g>
+    </svg>
+
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip" aria-hidden="true" data-pos="top">
+      <div class="t-name" id="ttName"></div>
+      <div class="t-desc" id="ttDesc"></div>
+    </div>
+  </div>
+
+<!-- =========================
+     RACE CONTENT TEMPLATES
+     Edit the HTML inside each <template> to change what appears
+     ========================= -->
+<template id="race-Temple">
+  <div class="left">
+    <h3>Might - subclass Swashbuckler</h3>
+    <p>Heroic strike does +200 damage.</p>
+	<p>Intelligence, Leadership, Luck, Nightshade Magic, Offence</p>
+	 <h3>Might - subclass Paragon</h3>
+	  <p>All allies deal maximum damage and receive minimal damage.</p>
+	  <p>Battlecraft, Daylight Magic, Diplomacy, Summon Avatar, Tactics</p>
+  </div>
+  <div class="right">
+    <h3>MAGIC — subclass Grand Inquisitor</h3>
+    <p>Enemy hero can only cast each spell once. </p>
+	<p>Arcane Magic, Battle Magic, Defense, Insight, Scouting </p>
+	<h3>MAGIC — subclass Ascendent</h3>
+    <p>All spells cost zero Mana.  </p>
+	<p>Economy, Logistics, Primal Magic, Resistance, Sorcery </p>
+  </div>
+</template>
+
+<template id="race-Schism">
+  <div class="left">
+    <h3>Might - subclass Unbound</h3>
+    <p>Unbound: All spells are at max level.</p>
+    <p>Daylight Magic, Leadership, Offense, Scouting, Sorcery</p>
+    <h3>Might - subclass Unfeeling</h3>
+    <p>Enemy loses all focus charges at the start of each round.</p>
+    <p>Diplomacy, Economy, Intelligence, Nightshade Magic, Resistance</p>
+  </div>
+  <div class="right">
+    <h3>MAGIC — subclass Unstoppable</h3>
+    <p>+10 attack, defense, spellpower, and knowledge.</p>
+    <p>Battle Magic, Battlecraft, Insight, Primal Magic, Tactics</p>
+    <h3>MAGIC — subclass Unfathomable</h3>
+    <p>Enemies deal minimal damage and receive maximum damage.</p>
+    <p>Arcane Magic, Defense, Logistics, Luck, Summon Avatar</p>
+  </div>
+</template>
+
+<template id="race-Necropolis">
+  <div class="left">
+    <h3>Might - subclass Harbinger of Doom</h3>
+    <p>Enemies have the lowest possible luck, always attacking with an unlucky strike.</p>
+    <p>Defense, Luck, Primal Magic, Scouting, Sorcery</p>
+    <h3>Might - subclass Walking Rot</h3>
+    <p>Enemies have minimum morale.</p>
+    <p>Diplomacy, Intelligence, Nightshade Magic, Resistance, Tactics</p>
+  </div>
+  <div class="right">
+    <h3>MAGIC — subclass Soul Weaver</h3>
+    <p>When an enemy stack dies, it is replaced with a temporary stack of friendly wights.</p>
+    <p>Arcane Magic, Battlecraft, Insight, Logistics, Summon Avatar</p>
+    <h3>MAGIC — subclass Chronomancer</h3>
+    <p>Necromancy works on all friendly units, not just undead.</p>
+    <p>Battle Magic, Daylight Magic, Economy, Offense, Tactics</p>
+  </div>
+</template>
+
+<template id="race-Dungeon">
+  <div class="left">
+    <h3>Might - subclass Balthalzar's Bodyguard</h3>
+    <p>100% Attack.</p>
+    <p>Diplomacy, Intelligence, Leadership, Nightshade Magic, Offense</p>
+    <h3>Might - subclass Silvertongue's Envoy</h3>
+    <p>100% Defense.</p>
+    <p>Daylight Magic, Defense, Luck, Scouting, Sorcery</p>
+  </div>
+  <div class="right">
+    <h3>MAGIC — subclass Amelchia's Heir</h3>
+    <p>100% Spellpower.</p>
+    <p>Battlecraft, Summon Avatar, Tactics, Insight, Primal Magic</p>
+    <h3>MAGIC — subclass Great Merchant</h3>
+    <p>Gain 10,000 gold a day.</p>
+    <p>Arcane Magic, Battle Magic, Economy, Logistics, Resistance</p>
+  </div>
+</template>
+
+<template id="race-Hive">
+  <div class="left">
+    <h3>Hive — Brood</h3>
+    <p>Left panel for <em>Hive</em>.</p>
+  </div>
+  <div class="right">
+    <h3>Hive — Swarm Tactics</h3>
+    <p>Right panel for <em>Hive</em>.</p>
+  </div>
+</template>
+
+<template id="race-Sylvan">
+  <div class="left">
+    <h3>Sylvan — Harmony</h3>
+    <p>Left panel for <em>Sylvan</em>.</p>
+  </div>
+  <div class="right">
+    <h3>Sylvan — Warfare</h3>
+    <p>Right panel for <em>Sylvan</em>.</p>
+  </div>
+</template>
+
+<script>
+/* =========================
+   Skill wheel configuration (unchanged core)
+   ========================= */
+
+/** Optional background watermark image (set "" to disable) */
+const BACKGROUND_IMAGE = ""; // e.g., "this.jpg"
+
+/** Placeholder image for icons you haven’t set yet */
+const ICON_PLACEHOLDER = "data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>\
+<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%230c1224'/><stop offset='100%' stop-color='%231b2240'/></linearGradient></defs>\
+<rect width='100%' height='100%' fill='url(%23g)'/>\
+<circle cx='100' cy='100' r='82' fill='none' stroke='%234b5164' stroke-width='6'/>\
+<text x='100' y='110' text-anchor='middle' font-size='28' fill='%23cdd4ea' font-family='Segoe UI, Arial'>IMG</text></svg>";
+
+/** Geometry & spacing (your current layout) */
+const SECTORS    = 23;
+const startAngle = 90;
+const clockwise  = true;
+
+const GROUP_GAP_DEG   = 1;
+const INTRA_GAP_DEG   = 0.1;
+const RADIAL_GAP_MIN  = 6;
+const PAD_VISUAL      = 4.0;
+
+/** Rings (outer → inner) */
+const RINGS = [
+  { name:"Outer",  radius: 565, sizeMax: 40 },
+  { name:"Middle", radius: 500, sizeMax: 44 },
+  { name:"Inner",  radius: 440, sizeMax: 46 }
+];
+
+/** Decorative rings (underlay) */
+const DECORATIVE_RINGS = [ { r: 410 }, { r: 470 }, { r: 535 }, { r: 595 } ];
+const RING_STROKE = 11;
+
+/** Separators */
+const SEPARATORS = { show:true, strokeWidth:2.2, outerExtend:0, innerInset:0, dashed:false };
+
+/** ICONS_CONFIG (edit these paths/texts) */
+const ICONS_CONFIG = {
+  outer: {
+    "01":[{icon:"Icons/bl11.jpg",name:"Basic Luck",desc:"Increases luck by 1"},{icon:"Icons/al11.jpg",name:"Advanced Luck",desc:"Increases luck by 2"},{icon:"Icons/el11.jpg",name:"Exper Luck",desc:"Increases luck by 3"}],
+    "02":[{icon:"Icons/bo1.jpg",name:"Basic Offense",desc:"Friendly units deal 10% more damage with basic attacks."},{icon:"Icons/ao1.jpg",name:"Advanced Offense",desc:"Friendly units deal 15% more damage with basic attacks."},{icon:"Icons/eo1.jpg",name:"Expert Offense",desc:"Friendly units deal 20% more damage with basic attacks."}],
+	"03":[{icon:"Icons/bd11.jpg",name:"Basic Defense",desc:"Friendly units take 10% less damage from basic attacks."},{icon:"Icons/ad11.jpg",name:"Advanced Defense",desc:"Friendly units take 15% less damage from basic attacks."},{icon:"Icons/ed11.jpg",name:"Expert Defense",desc:"Friendly units take 20% less damage from basic attacks."}],
+	"04":[{icon:"Icons/bb1.jpg",name:"Basic Battlecraft",desc:"When a friendly unit waits in battle, it gains 20% attack. When a friendly unit skips its turn, it gains 20% defense. "},{icon:"Icons/ab1.jpg",name:"Advanced Battlecraft",desc:"When a friendly unit waits in battle, it gains 30% attack. When a friendly unit skips its turn, it gains 30% defense. "},{icon:"Icons/eb1.jpg",name:"Expert Battlecraft",desc:"When a friendly unit waits in battle, it gains 40% attack. When a friendly unit skips its turn, it gains 40% defense. "}],
+	"05":[{icon:"Icons/br11.jpg",name:"Basic Recruitment",desc:"All cities gain +4 growth to Tier 1 units."},{icon:"Icons/ar1.jpg",name:"Advanced Recruitment",desc:"All cities gain +2 growth to Tier 2 units."},{icon:"Icons/er1.jpg",name:"Expert Recruitment",desc:"All cities gain +1 growth to Tier 3 units."}],
+	"06":[{icon:"Icons/bt11.jpg",name:"Basic Tactics",desc:"You can rearrange units within a 2 line area before combat."},{icon:"Icons/at11.jpg",name:"Advanced Tactics",desc:"You can rearrange units within a 3 line area before combat."},{icon:"Icons/et11.jpg",name:"Expert Tactics",desc:"You can rearrange units within a 4 line area before combat."}],
+	"07":[{icon:"Icons/bl1.jpg",name:"Basic Leadership",desc:"Morale is increased by 1."},{icon:"Icons/al1.jpg",name:"Advanced Leadership",desc:"Morale is increased by 2."},{icon:"Icons/el1.jpg",name:"Expert Leadership",desc:"Morale is increased by 3."}],
+	"08":[{icon:"Icons/bs111.jpg",name:"Basic Siegecraft",desc:"Catapult does 50 extra damage."},{icon:"Icons/as111.jpg",name:"Advanced Siegecraft",desc:"Catapult does 100 extra damage."},{icon:"Icons/es111.jpg",name:"Expert Siegecraft",desc:"Catapult does 150 extra damage."}],
+	"09":[{icon:"Icons/br1.jpg",name:"Basic Resistance",desc:"Friendly units take 10% less Magic damage."},{icon:"Icons/ar11.jpg",name:"Advanced Resistance",desc:"Friendly units take 20% less Magic damage."},{icon:"Icons/er11.jpg",name:"Expert Resistance",desc:"Friendly units take 30% less Magic damage."}],
+	"10":[{icon:"Icons/bdm1.jpg",name:"Basic Daylight Magic",desc:"Hero can learn Tier 3 Daylight spells. Daylight spells gain +1 level"},{icon:"Icons/adm1.jpg",name:"Advanced Daylight Magic",desc:"Hero can learn Tier 4 Daylight spells. Daylight spells cost -3 mana."},{icon:"Icons/edm1.jpg",name:"Expert Daylight Magic",desc:"Hero can learn Tier 5 Daylight spells without visiting a guild."}],
+	"11":[{icon:"Icons/bn1.jpg",name:"Basic Nightshade Magic",desc:"Hero can learn Tier 3 Nightshade spells.Nightshade spells gain +1 level"},{icon:"Icons/anm1.jpg",name:"Advanced Nightshade Magic",desc:"Hero can learn Tier 4 Nightshade spells.Nightshade spells cost -3 mana."},{icon:"Icons/enm1.jpg",name:"Expert Nightshade Magic",desc:"Hero can learn Tier 5 Nightshade spells without visiting a guild."}],
+	"12":[{icon:"Icons/bi11.jpg",name:"Basic Intelligence",desc:"Allows Hero to learn Level 3 spells without learning school."},{icon:"Icons/ai11.jpg",name:"Advanced Intelligence",desc:"Allows Hero to learn Level 4 spells without learning school."},{icon:"Icons/ei11.jpg",name:"Expert Intelligence",desc:"Allows Hero to learn Level 5 spells without learning school."}],
+	"13":[{icon:"Icons/as1.jpg",name:"Basic Arcane Magic",desc:"Hero can learn Tier 3 Arcane spells.Arcane spells gain +1 level"},{icon:"Icons/aam1.jpg",name:"Advanced Arcane Magic",desc:"Hero can learn Tier 4 Arcane spells. Arcane spells cost -3 mana."},{icon:"Icons/eam1.jpg",name:"Expert Arcane Magic",desc:"Hero can learn Tier 5 Arcane spells without visiting a guild."}],
+	"14":[{icon:"Icons/bbm1.jpg",name:"Basic Battle Magic",desc:"Friendly unit's attack and defense is increased by 10% Hero's spellpower and knowledge."},{icon:"Icons/abm1.jpg",name:"Advanced Battle Magic",desc:"Friendly unit's attack and defense is increased by 20% Hero's spellpower and knowledge."},{icon:"Icons/ebm1.jpg",name:"Expert Battle Magic",desc:"Friendly unit's attack and defense is increased by 30% Hero's spellpower and knowledge."}],
+	"15":[{icon:"Icons/bpm1.jpg",name:"Basic Primal Magic",desc:"Hero can learn Tier 3 Primal spells.Primal spells gain +1 level"},{icon:"Icons/apm1.jpg",name:"Advanced Primal Magic",desc:"Hero can learn Tier 4 Primal spells.Primal spells cost -3 mana."},{icon:"Icons/epm1.jpg",name:"Expert Primal Magic",desc:"Hero can learn Tier 5 Primal spells without visiting a guild."}],
+	"16":[{icon:"Icons/bs1.jpg",name:"Basic Sorcery",desc:"Hero's spells do 10% more damage."},{icon:"Icons/as1111.jpg",name:"Advanced Sorcery",desc:"Hero's spells do 20% more damage."},{icon:"Icons/es3.jpg",name:"Expert Sorcery",desc:"Hero's spells do 30% more damage."}],
+	"17":[{icon:"Icons/bsa1.jpg",name:"Basic Summon Avatar",desc:"Grants a spell that summons an Avatar that scales with the hero's knowledge and spellpower. Each level scales more powerfully. "},{icon:"Icons/asa1.jpg",name:"Advanced Summon Avatar",desc:"Grants a spell that summons an Avatar that scales with the hero's knowledge and spellpower. Each level scales more powerfully. "},{icon:"Icons/esa1.jpg",name:"Expert Summon Avatar",desc:"Grants a spell that summons an Avatar that scales with the hero's knowledge and spellpower. Each level scales more powerfully. "}],
+	"18":[{icon:"Icons/bt1.jpg",name:"Basic Thaumaturgy",desc:"Allows the Hero to cast another spell per round. Spells cost   +300% after each use."},{icon:"Icons/at1.jpg",name:"Advanced Thaumaturgy",desc:"Allows the Hero to cast another spell per round. Spells cost   +200% after each use."},{icon:"Icons/et1.jpg",name:"Expert Thaumaturgy",desc:"Allows the Hero to cast another spell per round. Spells cost   +100% after each use."}],
+	"19":[{icon:"Icons/bd1.jpg",name:"Basic Diplomacy",desc:"Allows you to sometimes recruit neutral armies for gold instead of fighting them and adds 0% persuasion power."},{icon:"Icons/ad1.jpg",name:"Advanced Diplomacy",desc:"Allows you to sometimes recruit neutral armies for gold instead of fighting them and adds 25% persuasion power."},{icon:"Icons/ed1.jpg",name:"Expert Diplomacy",desc:"Allows you to sometimes recruit neutral armies for gold instead of fighting them and adds 50% persuasion power."}],
+	"20":[{icon:"Icons/bl111.jpg",name:"Basic Logistics",desc:"Increases Hero movement points by 10%."},{icon:"Icons/alg2.jpg",name:"Advanced Logistics",desc:"Increases Hero movement points by 15%."},{icon:"Icons/elg1.jpg",name:"Expert Logistics",desc:"Increases Hero movement points by 20%."}],
+	"21":[{icon:"Icons/bi1.jpg",name:"Basic Insight",desc:"+20% experience."},{icon:"Icons/ai1.jpg",name:"Advanced Insight",desc:"+30% experience."},{icon:"Icons/ei1.jpg",name:"Expert Insight",desc:"+40% experience."}],
+	"22":[{icon:"Icons/be1.jpg",name:"Basic Economy",desc:"Gain 500 gold daily."},{icon:"Icons/ae1.jpg",name:"Advanced Economy",desc:"Gain 1000 gold daily."},{icon:"Icons/ee1.jpg",name:"Expert Economy",desc:"Gain 1500 gold daily."}],
+	"23":[{icon:"Icons/bs11.jpg",name:"Basic Scouting:",desc:"+1 to sight radius."},{icon:"Icons/as11.jpg",name:"Advanced Scouting:",desc:"+2 to sight radius."},{icon:"Icons/es1.jpg",name:"Expert Scouting:",desc:"+3 to sight radius."}]
+	},
+
+	
+  middle: {    
+	"01":[{icon:"Icons/bc1.jpg",name:"Beastly Confidence",desc:"Friendly creatures have a 1% higher chance to land a lucky strike for each point of luck. Bonus is doubled if the hero knows Primal Magic."},{icon:"Icons/ah.jpg",name:"Always Heads",desc:"The Hero gains 25% gold and resources from piles on the map. Doubled if the Hero knows Economy."},{icon:"Icons/mc.jpg",name:"Mearea's Chosen",desc:"Enemy luck reduced by 1 in battle."}],
+	"02":[{icon:"Icons/ba.jpg",name:"Battle Arts",desc:"Friendly units' abilities deal +50% damage."},{icon:"Icons/a1.jpg",name:"Archery",desc:"Friendly units' ranged and long reach attacks deal +15% damage."},{icon:"Icons/bm.jpg",name:"Battle March",desc:"Friendly units generate +1 focus point when they attack."}],
+	"03":[{icon:"Icons/sas.jpg",name:"Shields and Shells",desc:"Friendly units take -25% damage from counter attacks."},{icon:"Icons/c.jpg",name:"Cover",desc:"Friendly creatures take -20% damage from ranged and long reach attacks."},{icon:"Icons/htm.jpg",name:"Hymn to Martyrs",desc:"Friendly units generate +1 focus point when they take damage."}],
+	"04":[{icon:"Icons/mm.jpg",name:"Melee Mastery",desc:"Friendly units deal +10% and take -10% melee damage."},{icon:"Icons/rm.jpg",name:"Ranged Mastery",desc:"Friendly units deal +10% and take -10% ranged and long reach damage."},{icon:"Icons/overwatch.jpg",name:"Overwatch",desc:"When a friendly unit waits in combat, they gain Overwatch, counterattacking any enemy unit that moves within melee range."}],
+	"05":[{icon:"Icons/ds.jpg",name:"Direct Supervision",desc:"If the Hero is in the city at the start of a week, growth of all units in that city increase by 50%."},{icon:"Icons/eg.jpg",name:"Elite Guards",desc:"Tier 1, Tier 2, and Tier 3 friendly unit's attack and defense are increased by 25% of the Hero's attack and defense."},{icon:"Icons/vet.jpg",name:"Veterans",desc:"Tier 4 units growth in your cities increase by 1."}],
+	"06":[{icon:"Icons/ofa.jpg",name:"One for All",desc:"Friendly units gain +3 attack for each enemy within melee range. Doubled if the Hero knows Offense."},{icon:"Icons/ep.jpg",name:"Easy Prey",desc:"Whenever the enemy waits, friendly units gain +2 initiative until the end of round. Doesn't stack."},{icon:"Icons/em.jpg",name:"Energizing Mana",desc:"+1 focus charge each time the enemy uses a spell."}],
+	"07":[{icon:"Icons/r1.jpg",name:"Resolve",desc:"Friendly units' chance to take an additional turn increases by 1% for each point of morale. Doubled if the Hero knows Battlecraft."},{icon:"Icons/hol.jpg",name:"Hero of Legends",desc:"Enemy morale is reduced by 1 in battle."},{icon:"Icons/uad.jpg",name:"Ups and Downs",desc:"Whenever a friendly unit triggers negative moral, its morale is increased by 5 until the end of the next round."}],
+	"08":[{icon:"Icons/ra.jpg",name:"Relentless Assault",desc:"+1 speed and initiative to friendly units during a siege."},{icon:"Icons/fo.jpg",name:"Forward Observers",desc:"Ranged damage of friendly units is not reduced during a siege."},{icon:"Icons/b.jpg",name:"Barrage",desc:"Grants a unique siege ability. Allows the catapult to attack a hex and all adjacent hexes once per round."}],
+	"09":[{icon:"Icons/obs.jpg",name:"Obstruction",desc:"Enemy spells cost 20% more mana. If the Hero knows school of magic skill, the cost of enemy spells from that school increases by an additional 20%."},{icon:"Icons/res.jpg",name:"Resilience",desc:"Friendly creatures take -10% magic damage."},{icon:"Icons/fm.jpg",name:"Fast Metabolism",desc:"All negative effects on friendly units last for 2 fewer rounds (no less than 2)."}],
+	"10":[{icon:"Icons/ssa.jpg",name:"Scholar Synergy:Arina",desc:"+4 spellpower while casting Daylight spells. Gain an additional +1 for each school of magic learned."},{icon:"Icons/lf.jpg",name:"Luminous Focus",desc:"+1 focus charge at the start of battle."},{icon:"Icons/bs.jpg",name:"Brightest Sun",desc:"-1 level to all enemy Daylight spells."}],
+	"11":[{icon:"Icons/ss.jpg",name:"Scholar Synergy:Naira",desc:"+4 spellpower when casting Nightshade spells. Gain an additional +1 for each school of magic learned."},{icon:"Icons/d.jpg",name:"Disguise",desc:"Enemies cannot see detailed information about your army. When viewed, it shows random numbers of random creatures in your faction."},{icon:"Icons/dn.jpg",name:"Darkest Night",desc:"-1 level to enemy Nightshade spells."}],
+	"12":[{icon:"Icons/g.jpg",name:"Genius",desc:"Hero immediately levels up again."},{icon:"Icons/ast.jpg",name:"Astrology",desc:"The Hero begins learning neutral magic spells at lower levels."},{icon:"Icons/ee11.jpg",name:"Eagle Eye",desc:"At the start of battle, learn all spells the enemy knows that the Hero is capable of learning."}],
+	"13":[{icon:"Icons/ssd.jpg",name:"Scholar Synergy:Doreath",desc:"+4 spellpower when casting Arcane Spells. Gain an additional +1 spellpower for every school of magic learned."},{icon:"Icons/alie.jpg",name:"All Life is Endless",desc:"+30% healing and revival from friendly unit abilities and the Hero's spells in combat. Bonus is doubled if the Hero knows Summon Avatar."},{icon:"Icons/pt.jpg",name:"Purest Thought",desc:"-1 level to all enemy Arcane Spells."}],
+	"14":[{icon:"Icons/aod.jpg",name:"Aura of Destruction",desc:"Every time the Hero uses a spell in battle, attack is increased by 2 until the end of combat."},{icon:"Icons/aop.jpg",name:"Aura of Protection",desc:"Every time the Hero uses a spell in battle, defense is increased by 2 until the end of combat."},{icon:"Icons/aow.jpg",name:"Aura of Wizardry",desc:"Every time the Hero uses a spell in battle, spellpower is increased by 2 until the end of combat."}],
+	"15":[{icon:"Icons/ssh.jpg",name:"Scholar Synergy:Hksmilla",desc:"+4 spellpower when casting Primal spells. Gain an additional +1 for each other magic school learned."},{icon:"Icons/pf.jpg",name:"Primal Force",desc:"Negative and positive effects used by the Hero and friendly units last an additional round."},{icon:"Icons/st.jpg",name:"Sharpest Teeth",desc:"-1 level to enemy Primal spells."}],
+	"16":[{icon:"Icons/sm.jpg",name:"Sticky Magic",desc:"Effects applied by the Hero last 1 more round. Doubled if the Hero knows Intelligence."},{icon:"Icons/ma.jpg",name:"Magic Arrow",desc:"Grants a new combat spell. Deals magic damage to one target and costs 0 mana."},{icon:"Icons/re.jpg",name:"Raw Energy",desc:"10% more magic damage. Doubled if the Hero knows Offense."}],
+	"17":[{icon:"Icons/aof.jpg",name:"Avatar of Fury",desc:"Avatar's attack is increased by 25% of the Hero's spellpower. Doubled if the Hero knows Leadership."},{icon:"Icons/aot.jpg",name:"Avatar of Toughness",desc:"Avatar's defense is increased by 25% of the Hero's Knowledge. Doubled if the Hero knows Defense."},{icon:"Icons/aoc.jpg",name:"Avatar of Celerity",desc:"Avatar's speed and initiative is increased by 2. Doubled if the Hero knows Insight."}],
+	"18":[{icon:"Icons/a.jpg",name:"Antimage",desc:"Enemy spells cost +4 mana."},{icon:"Icons/vs.jpg",name:"Vast Soul",desc:"10% mana restored daily."},{icon:"Icons/hm.jpg",name:"Archmage",desc:"All your magic school spells gain +1 level."}],
+	"19":[{icon:"Icons/ltl.jpg",name:"Larger than Life",desc:"25% to your army power in the eyes of neutral units which makes them more likely to join or flee. Doubled if the Hero knows Battlecraft."},{icon:"Icons/e.jpg",name:"Eloquence",desc:"-75% to the cost of surrender."},{icon:"Icons/fh.jpg",name:"Folk Hero",desc:"+50 persuasion power in diplomacy with units from the Hero's faction on the global map."}],
+	"20":[{icon:"Icons/sp1.jpg",name:"Secret Passages",desc:"Terrain penalty reduced by 50%."},{icon:"Icons/sm1.jpg",name:"Strong Mounts",desc:"Neutral global spells cost -4 mana. Doubled if the hero knows Scouting."},{icon:"Icons/cp1.jpg",name:"Careful Planning",desc:"Every day, the Hero saves up 50 used movement points for the next day. Bonus is doubled if the Hero knows Arcane Magic."}],
+	"21":[{icon:"Icons/enl.jpg",name:"Enlightenment",desc:"Gain +10% more experience."},{icon:"Icons/ci.jpg",name:"Civic Innovation",desc:"The hero gains +100% law points. Bonus is doubled if the Hero knows Leadership."},{icon:"Icons/sag.jpg",name:"Sagacity",desc:"Shows the intentions of all neutral squads within 21 squares of the Hero."}],
+	"22":[{icon:"Icons/tc.jpg",name:"Tax Collector",desc:"+500 gold daily. Doubled if the Hero knows Logistics."},{icon:"Icons/s.jpg",name:"Smuggler",desc:"+1 crystal, gem or mercury, depending on the Hero's faction."},{icon:"Icons/mb.jpg",name:"Master Builder",desc:"+1 wood and ore daily."}],
+	"23":[{icon:"Icons/ls.jpg",name:"Long-Sight",desc:"Sight radius increased by 1. Doubled if the Hero knows Luck."},{icon:"Icons/fp.jpg",name:"Familiar Paths",desc:"+15% movement points if the hero starts the day in an area they control. Doubled if the Hero knows Intelligence."},{icon:"Icons/path.jpg",name:"Pathfinding",desc:"-50% terrain penalty."}]
+
+	},
+  inner:  {    
+	"01":[{icon:"Icons/lh.jpg",name:"Lucky Hit",desc:"When a friendly unit hits with a luck strike, enemies do not counter attack."},{icon:"Icons/lst.jpg",name:"Lightning Strikes Twice",desc:"Spells can also land a lucky strike, dealing 150% damage. The chance increases by 5% every point of luck."},{icon:"",name:"Inner 01 C",desc:"Edit me"}],
+	"02":[{icon:"Icons/sb.jpg",name:"Shadow Blades",desc:"Friendly units deal +1 damage. Doubled if the Hero knows Nightshade Magic."},{icon:"Icons/uf.jpg",name:"Unstoppable Force",desc:"Friendly creatures ignore 10% of the target's defense when dealing normal damage, including abilities."}],
+	"03":[{icon:"Icons/ta.jpg",name:"Territorial Advantage",desc:"When fighting in an area the Hero controls, each stack in the army gains 10% temporary units at the start of battle. Bonus is doubled if the Hero knows Diplomacy."},{icon:"Icons/f.jpg",name:"Firmness",desc:"Friendly creatures ignore 10% of the attacker's attack when taking normal damage, including abilities."}],
+	"04":[{icon:"Icons/bf.jpg",name:"Battle Focus",desc:"Generates +1 focus charge at the start of each round."},{icon:"Icons/ps.jpg",name:"Preemptive Strike",desc:"When a friendly unit skips a turn, they gain Preemptive Strike, allowing them to counterattack before the enemy's attack."}],
+	"05":[{icon:"Icons/relo.jpg",name:"Relocation",desc:"Grants a new global map spell. Allows interaction with any controlled city once a day, enabling the transfer of units to or from that city."},{icon:"Icons/str.jpg",name:"Serious Training",desc:"Friendly units' HP increase by 2."}],
+	"06":[{icon:"Icons/afo.jpg",name:"All for One",desc:"Friendly units gain +3 defense for each ally within melee range. Doubled if the Hero knows Defense."},{icon:"Icons/rm1.jpg",name:"Riposte Mastery",desc:"When a friendly unit kills an enemy with a counter attack, their counterattacks are refreshed."}],
+	"07":[{icon:"Icons/wsns.jpg",name:"Where Sun Never Sets",desc:"Attack, defense, spellpower and sight radius are increased by 3 when in an area you do not control. Bonus is doubled if the Hero knows Daylight Magic."},{icon:"Icons/m.jpg",name:"March!",desc:"Friendly units' initiative is increased by 1."}],
+	"08":[{icon:"Icons/pha.jpg",name:"Phalanx",desc:"Defender's Towers deal 50% damage to friendly units during the siege."},{icon:"Icons/tun.jpg",name:"Tunnelling",desc:"Grants a unique siege ability. Allows teleportation to friendly unit for up to 3 hexes per round."}],
+	"09":[{icon:"Icons/ha.jpg",name:"Hindrance Aura",desc:"During the Battle, enemy loses 1 focus charge at the start of each round."},{icon:"Icons/ms.jpg",name:"Magic Supression",desc:"Grants a new ability to. It kills the target summoned creature or all temporary units in a chosen stack"}],
+	"10":[{icon:"Icons/dt.jpg",name:"Daylight Teachings",desc:"+1 level to all Daylight spells."},{icon:"Icons/sol.jpg",name:"Speed of Light",desc:"+10 movement points. Doubled if the Hero knows Logistics."}],
+	"11":[{icon:"Icons/nt.jpg",name:"Nightshade Teachings",desc:"+1 level to all Nightshade Spells."},{icon:"Icons/hotw.jpg",name:"Hour of the Wolf",desc:"-15% attack and defense to enemy creatures. Doubled if the Hero knows Resistance."}],
+	"12":[{icon:"Icons/rc.jpg",name:"Rhythmic Cadence",desc:"+25% maximum mana. Doubled if the Hero knows Sorcery."},{icon:"Icons/rom.jpg",name:"Rite of Magic",desc:"Grants a new global spell. Allows the Hero to convert all movement points into mana."}],
+	"13":[{icon:"Icons/at.jpg",name:"Arcane Teachings",desc:"+1 level to all Arcane Spells."},{icon:"Icons/mf.jpg",name:"Mana Flex",desc:"Spells cost -2 mana."}],
+	"14":[{icon:"Icons/bma.jpg",name:"Battle Mage's Authority",desc:"Friendly units' attack is increased by 20% of the Hero's spellpower. Doubled if the Hero knows Sorcery."},{icon:"Icons/mpa.jpg",name:"Mage Protector's Authority",desc:"Friendly units' defense is increased by 20% of the Hero's knowledge. Doubled if the Hero knows Resistance."}],
+	"15":[{icon:"Icons/pt1.jpg",name:"Primal Teachings",desc:"+1 level to all Primal skills."},{icon:"Icons/cr.jpg",name:"Chaos Reigns",desc:"The Hero and friendly units deal +50% more damage with lucky strikes. Bonus is doubled if the Hero knows Battle Magic."}],
+	"16":[{icon:"Icons/pe.jpg",name:"Piercing Spells",desc:"Offensive spells ignore 15% of the target's resistance."},{icon:"Icons/hm.jpg",name:"High Mage",desc:"All your magic school spells gain 1 level."}],
+	"17":[{icon:"Icons/rw.jpg",name:"Reality Wardens",desc:"Friendly units do 100% more damage to summoned enemy units."},{icon:"Icons/tnil.jpg",name:"Their Name is Legion",desc:"Friendly unit abilities summon 50% more units."}],
+	"18":[{icon:"Icons/pi.jpg",name:"Practical Incantations",desc:"Heroic Strike deals +20 damage."},{icon:"Icons/as.jpg",name:"Ancient Scrolls",desc:"Adds all Tier 1 spells to your spellbook."}],
+	"19":[{icon:"Icons/aotd.jpg",name:"Art of the Deal",desc:"Squads on the global map take -15% gold to join. Doubled if the Hero knows Economics."},{icon:"Icons/va.jpg",name:"Vagrant Army",desc:"Neutral units gain 100% of the Hero's attack and defense as a bonus when in their army."}],
+	"20":[{icon:"Icons/lab.jpg",name:"Leaps and Bounds",desc:"The Hero restores 10 movement points after each victory in battle."},{icon:"Icons/btt.jpg",name:"Back to Town!",desc:"Grants a new global spell. Teleports the Hero to the nearest friendly town. All remaining movement points are lost."}],
+	"21":[{icon:"Icons/som.jpg",name:"Scholar of Magic",desc:"Allows heroes to teach each other spells. The exchange of knowledge occurs on contact. Only spells that the other party can learn are taught."},{icon:"Icons/ec.jpg",name:"Endless Charisma",desc:"+1 attack, defense, spellpower, and knowledge. Doubled if the Hero knows Tactics."}],
+	"22":[{icon:"Icons/e1.jpg",name:"Experimenter",desc:"+5 alchemist dust daily. Doubled if the Hero knows Insight."},{icon:"Icons/m1.jpg",name:"Merchant",desc:"The Hero counts as an additional market place when calculating trade prices."}],
+	"23":[{icon:"Icons/v.jpg",name:"Visions",desc:"Shows the exact army composition of any enemy within [300% x Hero sight radius] squares of the Hero."},{icon:"Icons/r.jpg",name:"Reconnaissance",desc:"Removes the fog of war within [200% x Hero radius sight] of the Hero each morning."}]}
+
+};
+
+/* ===== Build DATA from ICONS_CONFIG ===== */
+function buildDataFromConfig(){
+  const rings = ["outer","middle","inner"];
+  const DATA = Array.from({length: rings.length}, (_, r) =>
+    Array.from({length: SECTORS}, (_, s) =>
+      Array.from({length: 3}, (_, j) => {
+        const sectorKey = String(s+1).padStart(2,"0");
+        const ringKey = rings[r];
+        const cfgTriplet = ICONS_CONFIG[ringKey]?.[sectorKey]?.[j] || {};
+        const icon = (cfgTriplet.icon && cfgTriplet.icon.trim()) ? cfgTriplet.icon.trim() : ICON_PLACEHOLDER;
+        const name = (cfgTriplet.name && cfgTriplet.name.trim()) ? cfgTriplet.name.trim() : `${RINGS[r].name} ${sectorKey} ${["A","B","C"][j]}`;
+        const desc = (cfgTriplet.desc && cfgTriplet.desc.trim()) ? cfgTriplet.desc.trim() : `Edit me: ${RINGS[r].name} ${sectorKey} ${["A","B","C"][j]}`;
+        return { id:`r${r+1}s${sectorKey}-${["A","B","C"][j]}`, name, desc, icon };
+      })
+    )
+  );
+  return DATA;
+}
+const DATA = buildDataFromConfig();
+
+/* ===== Core rendering code (unchanged logic) ===== */
+const rad=d=>d*Math.PI/180, deg=r=>r*180/Math.PI;
+const host=document.getElementById("wheelHost");
+const svg=host.querySelector("svg");
+const gRings=document.getElementById("rings");
+const gSeps=document.getElementById("separators");
+const gNodes=document.getElementById("nodes");
+const gDebug=document.getElementById("debug");
+const defs=document.getElementById("defs");
+const tooltip=document.getElementById("tooltip");
+const ttName=document.getElementById("ttName");
+const ttDesc=document.getElementById("ttDesc");
+const bgWatermark=document.getElementById("bgWatermark");
+if (BACKGROUND_IMAGE) bgWatermark.style.backgroundImage=`url("${BACKGROUND_IMAGE}")`; else bgWatermark.remove();
+
+const state=new Map();
+
+/* Level chip (outer ring only) */
+const LEVEL_MAX_DISPLAY=50, WARN_AT_SELECTED=21;
+const levelChip=document.getElementById("levelChip");
+const levelValue=document.getElementById("levelValue");
+const levelNote=document.getElementById("levelNote");
+
+/* Race panels DOM */
+const raceSelect = document.getElementById("raceSelect");
+const raceLeft   = document.getElementById("racePanelLeft");
+const raceRight  = document.getElementById("racePanelRight");
+
+/* Precompute OUTER IDs */
+const OUTER_IDS=new Set();
+for(let s=0;s<SECTORS;s++){ for(let j=0;j<3;j++){ OUTER_IDS.add(DATA[0][s][j].id); }}
+
+/* Validation */
+function validateConfig(){
+  if(!Number.isFinite(SECTORS)||SECTORS<1) window.SECTORS=23;
+  for(let i=0;i<RINGS.length;i++){
+    const r=RINGS[i]; r.radius=Number(r.radius); r.sizeMax=Number(r.sizeMax);
+    if(!Number.isFinite(r.radius)||r.radius<=0) r.radius=300;
+    if(!Number.isFinite(r.sizeMax)||r.sizeMax<=0) r.sizeMax=32;
+  }
+  ["GROUP_GAP_DEG","INTRA_GAP_DEG","RADIAL_GAP_MIN","PAD_VISUAL"].forEach(k=>{
+    window[k]=Number(window[k]);
+    if(!Number.isFinite(window[k])){
+      if(k==="GROUP_GAP_DEG") window[k]=1.6;
+      if(k==="INTRA_GAP_DEG") window[k]=0.6;
+      if(k==="RADIAL_GAP_MIN") window[k]=8;
+      if(k==="PAD_VISUAL")     window[k]=4;
+    }
+  });
+}
+function drawRings(){
+  gRings.innerHTML="";
+  DECORATIVE_RINGS.forEach(dr=>{
+    const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("class","ring"); c.setAttribute("cx","0"); c.setAttribute("cy","0"); c.setAttribute("r",String(dr.r));
+    gRings.appendChild(c);
+  });
+}
+function angularWidthDeg(imgRadius,R){
+  const ext=imgRadius+PAD_VISUAL;
+  if(!Number.isFinite(R)||R<=0) return 0;
+  const ratio=Math.max(0,Math.min(1,ext/R));
+  return deg(2*Math.asin(ratio));
+}
+function computeRingSizes(){
+  const sizes=new Array(RINGS.length).fill(0);
+  const sectorStep=360/SECTORS;
+  const order=RINGS.map((r,i)=>[Number(r.radius),i]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  const floor=6;
+  for(let k=0;k<order.length;k++){
+    const i=order[k], ring=RINGS[i], R=Number(ring.radius);
+    let lo=floor, hi=Number(ring.sizeMax);
+    if(k>0){
+      const ii=order[k-1], innerR=Number(RINGS[ii].radius), innerSz=Number(sizes[ii])||0;
+      const centerDist=R-innerR;
+      const radialBound=centerDist - RADIAL_GAP_MIN - PAD_VISUAL - (innerSz+PAD_VISUAL);
+      if(Number.isFinite(radialBound)) hi=Math.min(hi, radialBound);
+    }
+    if(!Number.isFinite(hi)||hi<lo) hi=lo;
+    const fits=(s)=>{ if(!Number.isFinite(s)||s<=0) return false;
+      const w=angularWidthDeg(s,R); if(w<=0) return false;
+      return (3*w + 2*INTRA_GAP_DEG) <= (sectorStep - GROUP_GAP_DEG);
+    };
+    let l=lo,h=Math.max(lo,hi);
+    for(let it=0;it<30;it++){ const mid=(l+h)/2; if(fits(mid)) l=mid; else h=mid; }
+    sizes[i]=Number.isFinite(l)&&l>0?l:floor;
+  }
+  return sizes;
+}
+function drawSeparators(sizes){
+  gSeps.innerHTML=""; if(!SEPARATORS.show) return;
+  const sectorStep=360/SECTORS, dir=clockwise?-1:1;
+  const innerVisualR=Math.min(...DECORATIVE_RINGS.map(d=>d.r));
+  const outerVisualR=Math.max(...DECORATIVE_RINGS.map(d=>d.r));
+  const innerBound=innerVisualR + RING_STROKE/2;
+  const outerBound=outerVisualR - RING_STROKE/2;
+  for(let s=0;s<SECTORS;s++){
+    const ang=startAngle + dir*(s*sectorStep + sectorStep/2), a=rad(ang);
+    const x1=Math.cos(a)*innerBound, y1=Math.sin(a)*innerBound;
+    const x2=Math.cos(a)*outerBound, y2=Math.sin(a)*outerBound;
+    const ln=document.createElementNS("http://www.w3.org/2000/svg","line");
+    ln.setAttribute("class","sep");
+    ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
+    ln.setAttribute("x2",x2); ln.setAttribute("y2",y2);
+    ln.setAttribute("stroke-width", SEPARATORS.strokeWidth);
+    if(SEPARATORS.dashed) ln.setAttribute("stroke-dasharray","10 8");
+    gSeps.appendChild(ln);
+  }
+}
+function drawNodes(){
+  gNodes.innerHTML=""; gDebug.innerHTML=""; defs.innerHTML="";
+  const sizes=computeRingSizes(); drawSeparators(sizes);
+  const sectorStep=360/SECTORS;
+  RINGS.forEach((row,rowIdx)=>{
+    let size=Number(sizes[rowIdx]); const R=Number(row.radius);
+    if(!Number.isFinite(size)||size<=0){ size=12; } if(!Number.isFinite(R)||R<=0){ return; }
+    const wDeg=angularWidthDeg(size,R); const spreadDeg=wDeg + INTRA_GAP_DEG; const ext=size+PAD_VISUAL;
+    for(let s=0;s<SECTORS;s++){
+      const sectorCenter=startAngle + (clockwise?-1:1)*(s*sectorStep);
+      const offsets=[-spreadDeg, 0, +spreadDeg];
+      offsets.forEach((off,j)=>{
+        const angle=sectorCenter + off*(clockwise?1:-1);
+        const x=Math.cos(rad(angle))*R, y=Math.sin(rad(angle))*R;
+        const item=DATA[rowIdx]?.[s]?.[j]; const id=item.id;
+        if(!state.has(id)) state.set(id,{selected:false});
+
+        // clipPath centered on group origin
+        const clipId=`clip-${id}`, cl=document.createElementNS("http://www.w3.org/2000/svg","clipPath");
+        cl.setAttribute("id",clipId); cl.setAttribute("clipPathUnits","userSpaceOnUse");
+        const clc=document.createElementNS("http://www.w3.org/2000/svg","circle");
+        clc.setAttribute("r",String(size)); clc.setAttribute("cx","0"); clc.setAttribute("cy","0"); cl.appendChild(clc); defs.appendChild(cl);
+
+        const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+        g.setAttribute("class","node"); g.setAttribute("transform",`translate(${x},${y})`);
+        g.setAttribute("data-id",id); g.setAttribute("role","button");
+
+        const hit=document.createElementNS("http://www.w3.org/2000/svg","circle");
+        hit.setAttribute("class","hit"); hit.setAttribute("r",String(ext)); g.appendChild(hit);
+
+        const badge=document.createElementNS("http://www.w3.org/2000/svg","circle");
+        badge.setAttribute("class","badge"); badge.setAttribute("r",String(size+3.0)); g.appendChild(badge);
+
+        const img=document.createElementNS("http://www.w3.org/2000/svg","image");
+        img.setAttribute("x",String(-size)); img.setAttribute("y",String(-size));
+        img.setAttribute("width",String(size*2)); img.setAttribute("height",String(size*2));
+        img.setAttribute("preserveAspectRatio","xMidYMid slice"); img.setAttribute("clip-path",`url(#${clipId})`);
+        img.setAttribute("class","icon"); img.setAttributeNS("http://www.w3.org/1999/xlink","href",item.icon||ICON_PLACEHOLDER); img.setAttribute("href",item.icon||ICON_PLACEHOLDER);
+        g.appendChild(img);
+
+        applyNodeClasses(g,id);
+
+        g.addEventListener("pointerenter",()=>showTooltip(item));
+        g.addEventListener("pointerleave",hideTooltip);
+        g.addEventListener("pointermove",positionTooltip);
+        g.addEventListener("click",ev=>{ ev.preventDefault(); toggleState(id,g); });
+
+        gNodes.appendChild(g);
+      });
+    }
+  });
+}
+
+/* Selection UI */
+function toggleState(id,g){ const s=state.get(id); s.selected=!s.selected; applyNodeClasses(g,id); updateLevelUI(); }
+function applyNodeClasses(g,id){ const s=state.get(id); g.classList.toggle("selected", !!s?.selected); }
+
+/* Tooltip content & smart placement */
+function showTooltip(item){
+  ttName.textContent=item.name||"Skill";
+  ttDesc.textContent=item.desc||"—";
+  tooltip.classList.add("show");
+  tooltip.setAttribute("aria-hidden","false");
+}
+function hideTooltip(){ tooltip.classList.remove("show"); tooltip.setAttribute("aria-hidden","true"); }
+function positionTooltip(ev){
+  const hostRect=host.getBoundingClientRect(), pad=8, gap=12;
+  const mx=ev.clientX - hostRect.left, my=ev.clientY - hostRect.top;
+  const ttRect=tooltip.getBoundingClientRect(); const tw=ttRect.width, th=ttRect.height;
+  const minC=pad + tw/2, maxC=hostRect.width - pad - tw/2;
+  const cx=Math.max(minC, Math.min(mx, maxC));
+  let top=my - th - gap, pos="top";
+  if(top < pad){ top=my + gap; pos="below"; if(top + th > hostRect.height - pad) top = hostRect.height - pad - th; }
+  else { if(top < pad) top=pad; }
+  tooltip.style.left=cx+"px"; tooltip.style.top=top+"px"; tooltip.setAttribute("data-pos",pos);
+}
+
+/* Level (outer only) */
+function updateLevelUI(){
+  let count=0; state.forEach((s,id)=>{ if(s?.selected && OUTER_IDS.has(id)) count++; });
+  const shown=Math.min(count,50); levelValue.textContent=String(shown);
+  const warn=count>21; levelChip.classList.toggle("warn",warn); levelNote.textContent=warn?"not enough skill slots":"";
+}
+
+/* ===== Race panels logic =====
+   Reads from <template id="race-..."> and injects into the two panels.
+   Edit the HTML inside those templates to change the content. */
+function applyRace(raceName){
+  const tpl = document.getElementById(`race-${raceName}`);
+  const left = document.getElementById("racePanelLeft");
+  const right= document.getElementById("racePanelRight");
+  // Clear
+  left.innerHTML = ""; right.innerHTML = "";
+  if (!tpl) return;
+  // Clone the template’s fragment so edits to panels don’t change the template
+  const frag = tpl.content.cloneNode(true);
+  const leftContent  = frag.querySelector(".left");
+  const rightContent = frag.querySelector(".right");
+  if (leftContent)  left.append(...Array.from(leftContent.childNodes));
+  if (rightContent) right.append(...Array.from(rightContent.childNodes));
+}
+
+/* Init */
+(function init(){
+  const bg=document.getElementById("bgWatermark"); if(!BACKGROUND_IMAGE && bg) bg.remove();
+  validateConfig();
+  drawRings();
+  drawNodes();
+  updateLevelUI();
+
+  // Race selector
+  applyRace(raceSelect.value || "Temple");
+  raceSelect.addEventListener("change", ()=>applyRace(raceSelect.value));
+
+  new ResizeObserver(()=>{}).observe(host);
+})();
+</script>
+</body>
+</html>
