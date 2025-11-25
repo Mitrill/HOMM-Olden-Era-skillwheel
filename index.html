@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>HoMM Skill Wheel – Triplets, 2‑state (Hardcoded + Race Panels)</title>
+<title>HoMM Olden Era Skill Wheel</title>
 <style>
   :root{
     --bg:#0b0d13;
@@ -74,7 +74,7 @@
 
   /* Tooltip (smart positioning) */
   .tooltip{
-    position:absolute; z-index:10; pointer-events:none;
+    position:absolute; z-index:9999; pointer-events:none;
     min-width: 220px; max-width: min(340px, 80vw);
     background: var(--tooltip-bg); border:1px solid var(--tooltip-border);
     color:var(--tooltip-text); padding: .65rem .75rem; border-radius: 10px;
@@ -140,10 +140,10 @@
     pointer-events:auto; /* allow text selection & scrolling */
   }
   .race-panels h3{
-    margin: 0 0 6px; font-size: 1.05rem; font-weight:700; color:#f1f4ff;
+    margin: 0 0 6px; font-size: 0.95rem; font-weight:700; color:#f1f4ff;
   }
   .race-panels p, .race-panels li{
-    color:#cfd6ea; line-height: 1.35rem; margin: 0 0 .6rem;
+    color:#cfd6ea; font-size: 0.90rem; line-height: 1.05rem; margin: 0 0 .6rem;
   }
   .race-panels ul{ padding-left: 1.1rem; margin: .2rem 0 .8rem; }
   .race-panels em{ color:#a0abcc; }
@@ -199,20 +199,20 @@
 
     <!-- Race chip -->
     <div id="raceChip" class="race-badge" aria-live="polite" aria-atomic="true">
-      <span class="label" style="opacity:.9; letter-spacing:.02em;">Race</span>
+      <span class="label" style="opacity:.9; letter-spacing:.02em;">Faction</span>
       <select id="raceSelect">
         <option value="Temple">Temple</option>
-        <option value="Schism">Schism</option>
-        <option value="Necropolis">Necropolis</option>
-        <option value="Dungeon">Dungeon</option>
-        <option value="Hive">Hive</option>
-        <option value="Sylvan">Sylvan</option>
+        <option value="Schism">Schisme</option>
+        <option value="Necropolis">Necropole</option>
+        <option value="Dungeon">Donjon</option>
+        <option value="Hive">Ruche</option>
+        <option value="Sylvan">Sylve</option>
       </select>
     </div>
 	<div id="subclassChip" class="subclass-badge" aria-live="polite" aria-atomic="true">
-  <span class="label" style="opacity:.9; letter-spacing:.02em;">Subclass</span>
+  <span class="label" style="opacity:.9; letter-spacing:.02em;">Sous-classe</span>
   <select id="subclassSelect">
-    <option value="">— Select —</option>
+    <option value="">— Sélectionner —</option>
   </select>
 </div>
 
@@ -246,77 +246,77 @@
      ========================= -->
 <template id="race-Temple">
   <div class="left">
-    <h3>Might - subclass Swashbuckler</h3>
-    <p>Heroic strike does +200 damage.</p>
-	<p>Intelligence, Leadership, Luck, Nightshade Magic, Offence</p>
-	 <h3>Might - subclass Paragon</h3>
-	  <p>All allies deal maximum damage and receive minimal damage.</p>
-	  <p>Battlecraft, Daylight Magic, Diplomacy, Summon Avatar, Tactics</p>
+    <h3>Might - sous-classe Bretteur</h3>
+    <p>Coup héroïque inflige +200 points de dégât de base.</p>
+	<p>Renseignements, Commandement, Chance, Sorts de Belladone, Offensive</p>
+	 <h3>Might - sous-classe Parangon</h3>
+	  <p>Tous les alliés infligent toujours le maximum de dégâts et subissent le minimum.</p>
+	  <p>Art de la guerre, Sorts de Lumière, Diplomatie, Invocation d'Avatar, Stratégie</p>
   </div>
   <div class="right">
-    <h3>Magic — subclass Grand Inquisitor</h3>
-    <p>Enemy hero can only cast each spell once. </p>
-	<p>Arcane Magic, Battle Magic, Defense, Insight, Scouting </p>
-	<h3>Magic — subclass Ascendent</h3>
-    <p>All spells cost zero Mana.  </p>
-	<p>Economy, Logistics, Primal Magic, Resistance, Sorcery </p>
+    <h3>Magic — sous-classe Grand Inquisiteur</h3>
+    <p>Le héros ennemi ne peut utiliser chaque sort qu'une fois par combat.</p>
+	<p>Sorts des Arcanes, Sorts primordiaux, Défense, Insight, Repérage </p>
+	<h3>Magic — sous-classe Ascendant</h3>
+    <p>Tous les sorts du héros coûtent toujours 0 mana.</p>
+	<p>Économie, Logistique, Sorts Primordiaux, Résistance, Sorcellerie </p>
   </div>
 </template>
 
 <template id="race-Schism">
   <div class="left">
-    <h3>Might - subclass Unbound</h3>
-    <p>Unbound: All spells are at max level.</p>
-    <p>Daylight Magic, Leadership, Offense, Scouting, Sorcery</p>
-    <h3>Might - subclass Unfeeling</h3>
-    <p>Enemy loses all focus charges at the start of each round.</p>
-    <p>Diplomacy, Economy, Intelligence, Nightshade Magic, Resistance</p>
+    <h3>Might - sous-classe Débridé"</h3>
+    <p>Augmente le niveau de tous les dorts du héros à leur maximum.</p>
+    <p>Sorts de Lumière, Commandement, Offensive, Repérage, Sorcellerie</p>
+    <h3>Might - sous-classe Insensible</h3>
+    <p>L'ennemi perd toutes les charges de focalisation au début de chaque tour de combat.</p>
+    <p>Diplomatie, Économie, Renseignements, Sorts de Belladone, Résistance</p>
   </div>
   <div class="right">
-    <h3>Magic — subclass Unstoppable</h3>
-    <p>+10 attack, defense, spellpower, and knowledge.</p>
-    <p>Battle Magic, Battlecraft, Insight, Primal Magic, Tactics</p>
-    <h3>Magic — subclass Unfathomable</h3>
-    <p>Enemies deal minimal damage and receive maximum damage.</p>
-    <p>Arcane Magic, Defense, Logistics, Luck, Summon Avatar</p>
+    <h3>Magic — sous-classe Imparable</h3>
+    <p>+10 en attaque, défense, puissance de sorts et savoir.</p>
+    <p>Sorts primordiaux, Art de la guerre, Insight, Sorts Primordiaux, Stratégie</p>
+    <h3>Magic — sous-classe Insondable</h3>
+    <p>Tous les ennemis infligent toujours le minimum de dégâts et subissent le maximum de dégâts.</p>
+    <p>Sorts des Arcanes, Défense, Logistique, Chance, Invocation d'Avatar</p>
   </div>
 </template>
 
 <template id="race-Necropolis">
   <div class="left">
-    <h3>Might - subclass Harbinger of Doom</h3>
-    <p>Enemies have the lowest possible luck, always attacking with an unlucky strike.</p>
-    <p>Defense, Luck, Primal Magic, Scouting, Sorcery</p>
-    <h3>Might - subclass Walking Rot</h3>
-    <p>Enemies have minimum morale.</p>
-    <p>Diplomacy, Intelligence, Nightshade Magic, Resistance, Tactics</p>
+    <h3>Might - sous-classe Héraut du destin</h3>
+    <p>Les créatures ennemies en combat ont le minimum de chance possible et réussissent toujours à porter un coup malchanceux lorsqu'elles attaquent.</p>
+    <p>Défense, Chance, Sorts Primordiaux, Repérage, Sorcellerie</p>
+    <h3>Might - sous-classe Pourriture ambulante</h3>
+    <p>Tous les ennemis ont toujours un moral minimum.</p>
+    <p>Diplomatie, Renseignements, Sorts de Belladone, Résistance, Stratégie</p>
   </div>
   <div class="right">
-    <h3>Magic — subclass Soul Weaver</h3>
-    <p>When an enemy stack dies, it is replaced with a temporary stack of friendly wights.</p>
-    <p>Arcane Magic, Battlecraft, Insight, Logistics, Summon Avatar</p>
-    <h3>Magic — subclass Chronomancer</h3>
-    <p>Necromancy works on all friendly units, not just undead.</p>
-    <p>Battle Magic, Daylight Magic, Economy, Offense, Tactics</p>
+    <h3>Magic — sous-classe Tisse-âme</h3>
+    <p>Quand un peloton ennemi est tué au combat, un peloton temporaire d'esprits alliés apparaît à sa place.</p>
+    <p>Sorts des Arcanes, Art de la guerre, Insight, Logistique, Invocation d'Avatar</p>
+    <h3>Magic — sous-classe Chronomancien</h3>
+    <p>La nécromancie fonctionne pour toutes les créatures et pas seulement les morts-vivants.</p>
+    <p>Sorts primordiaux, Sorts de Lumière, Économie, Offensive, Stratégie</p>
   </div>
 </template>
 
 <template id="race-Dungeon">
   <div class="left">
-    <h3>Might - subclass Balthalzar's Bodyguard</h3>
-    <p>100% Attack.</p>
-    <p>Diplomacy, Intelligence, Leadership, Nightshade Magic, Offense</p>
-    <h3>Might - subclass Silvertongue's Envoy</h3>
-    <p>100% Defense.</p>
-    <p>Daylight Magic, Defense, Luck, Scouting, Sorcery</p>
+    <h3>Might - sous-classe Garde du corps de Balthalzar</h3>
+    <p>Augmente l'attaque de 100%.</p>
+    <p>Diplomatie, Renseignements, Commandement, Sorts de Belladone, Offensive</p>
+    <h3>Might - sous-classe Envoyé de Silvertongue</h3>
+    <p>Augmente la défense de 100%.</p>
+    <p>Sorts de Lumière, Défense, Chance, Repérage, Sorcellerie</p>
   </div>
   <div class="right">
-    <h3>Magic — subclass Amelchia's Heir</h3>
-    <p>100% Spellpower.</p>
-    <p>Battlecraft, Summon Avatar, Tactics, Insight, Primal Magic</p>
-    <h3>Magic — subclass Great Merchant</h3>
-    <p>Gain 10,000 gold a day.</p>
-    <p>Arcane Magic, Battle Magic, Economy, Logistics, Resistance</p>
+    <h3>Magic — sous-classe Héritier d'Amelchia</h3>
+    <p>Augmente la puissance des sorts de 100 %.</p>
+    <p>Art de la guerre, Invocation d'Avatar, Stratégie, Insight, Sorts Primordiaux</p>
+    <h3>Magic — sous-classe Grand Marchand</h3>
+    <p>Octroie + 10 000 d'or par jour.</p>
+    <p>Sorts des Arcanes, Sorts primordiaux, Économie, Logistique, Résistance</p>
   </div>
 </template>
 
@@ -326,7 +326,7 @@
     <p>Left panel for <em>Hive</em>.</p>
   </div>
   <div class="right">
-    <h3>Hive — Swarm Tactics</h3>
+    <h3>Hive — Swarm Stratégie</h3>
     <p>Right panel for <em>Hive</em>.</p>
   </div>
 </template>
@@ -387,83 +387,333 @@ const SEPARATORS = { show:true, strokeWidth:2.2, outerExtend:0, innerInset:0, da
 /** ICONS_CONFIG (edit these paths/texts) */
 const ICONS_CONFIG = {
   outer: {
-    "01":[{icon:"Icons/bl11.jpg",name:"Basic Luck",desc:"Increases luck by 1"},{icon:"Icons/al11.jpg",name:"Advanced Luck",desc:"Increases luck by 2"},{icon:"Icons/el11.jpg",name:"Exper Luck",desc:"Increases luck by 3"}],
-    "02":[{icon:"Icons/bo1.jpg",name:"Basic Offense",desc:"Friendly units deal 10% more damage with basic attacks."},{icon:"Icons/ao1.jpg",name:"Advanced Offense",desc:"Friendly units deal 15% more damage with basic attacks."},{icon:"Icons/eo1.jpg",name:"Expert Offense",desc:"Friendly units deal 20% more damage with basic attacks."}],
-	"03":[{icon:"Icons/bd11.jpg",name:"Basic Defense",desc:"Friendly units take 10% less damage from basic attacks."},{icon:"Icons/ad11.jpg",name:"Advanced Defense",desc:"Friendly units take 15% less damage from basic attacks."},{icon:"Icons/ed11.jpg",name:"Expert Defense",desc:"Friendly units take 20% less damage from basic attacks."}],
-	"04":[{icon:"Icons/bb1.jpg",name:"Basic Battlecraft",desc:"When a friendly unit waits in battle, it gains 20% attack. When a friendly unit skips its turn, it gains 20% defense. "},{icon:"Icons/ab1.jpg",name:"Advanced Battlecraft",desc:"When a friendly unit waits in battle, it gains 30% attack. When a friendly unit skips its turn, it gains 30% defense. "},{icon:"Icons/eb1.jpg",name:"Expert Battlecraft",desc:"When a friendly unit waits in battle, it gains 40% attack. When a friendly unit skips its turn, it gains 40% defense. "}],
-	"05":[{icon:"Icons/br11.jpg",name:"Basic Recruitment",desc:"All cities gain +4 growth to Tier 1 units."},{icon:"Icons/ar1.jpg",name:"Advanced Recruitment",desc:"All cities gain +2 growth to Tier 2 units."},{icon:"Icons/er1.jpg",name:"Expert Recruitment",desc:"All cities gain +1 growth to Tier 3 units."}],
-	"06":[{icon:"Icons/bt11.jpg",name:"Basic Tactics",desc:"You can rearrange units within a 2 line area before combat."},{icon:"Icons/at11.jpg",name:"Advanced Tactics",desc:"You can rearrange units within a 3 line area before combat."},{icon:"Icons/et11.jpg",name:"Expert Tactics",desc:"You can rearrange units within a 4 line area before combat."}],
-	"07":[{icon:"Icons/bl1.jpg",name:"Basic Leadership",desc:"Morale is increased by 1."},{icon:"Icons/al1.jpg",name:"Advanced Leadership",desc:"Morale is increased by 2."},{icon:"Icons/el1.jpg",name:"Expert Leadership",desc:"Morale is increased by 3."}],
-	"08":[{icon:"Icons/bs111.jpg",name:"Basic Siegecraft",desc:"Catapult does 50 extra damage."},{icon:"Icons/as111.jpg",name:"Advanced Siegecraft",desc:"Catapult does 100 extra damage."},{icon:"Icons/es111.jpg",name:"Expert Siegecraft",desc:"Catapult does 150 extra damage."}],
-	"09":[{icon:"Icons/br1.jpg",name:"Basic Resistance",desc:"Friendly units take 10% less Magic damage."},{icon:"Icons/ar11.jpg",name:"Advanced Resistance",desc:"Friendly units take 20% less Magic damage."},{icon:"Icons/er11.jpg",name:"Expert Resistance",desc:"Friendly units take 30% less Magic damage."}],
-	"10":[{icon:"Icons/bdm1.jpg",name:"Basic Daylight Magic",desc:"Hero can learn Tier 3 Daylight spells. Daylight spells gain +1 level"},{icon:"Icons/adm1.jpg",name:"Advanced Daylight Magic",desc:"Hero can learn Tier 4 Daylight spells. Daylight spells cost -3 mana."},{icon:"Icons/edm1.jpg",name:"Expert Daylight Magic",desc:"Hero can learn Tier 5 Daylight spells without visiting a guild."}],
-	"11":[{icon:"Icons/bn1.jpg",name:"Basic Nightshade Magic",desc:"Hero can learn Tier 3 Nightshade spells.Nightshade spells gain +1 level"},{icon:"Icons/anm1.jpg",name:"Advanced Nightshade Magic",desc:"Hero can learn Tier 4 Nightshade spells.Nightshade spells cost -3 mana."},{icon:"Icons/enm1.jpg",name:"Expert Nightshade Magic",desc:"Hero can learn Tier 5 Nightshade spells without visiting a guild."}],
-	"12":[{icon:"Icons/bi11.jpg",name:"Basic Intelligence",desc:"Allows Hero to learn Level 3 spells without learning school."},{icon:"Icons/ai11.jpg",name:"Advanced Intelligence",desc:"Allows Hero to learn Level 4 spells without learning school."},{icon:"Icons/ei11.jpg",name:"Expert Intelligence",desc:"Allows Hero to learn Level 5 spells without learning school."}],
-	"13":[{icon:"Icons/as1.jpg",name:"Basic Arcane Magic",desc:"Hero can learn Tier 3 Arcane spells.Arcane spells gain +1 level"},{icon:"Icons/aam1.jpg",name:"Advanced Arcane Magic",desc:"Hero can learn Tier 4 Arcane spells. Arcane spells cost -3 mana."},{icon:"Icons/eam1.jpg",name:"Expert Arcane Magic",desc:"Hero can learn Tier 5 Arcane spells without visiting a guild."}],
-	"14":[{icon:"Icons/bbm1.jpg",name:"Basic Battle Magic",desc:"Friendly unit's attack and defense is increased by 10% Hero's spellpower and knowledge."},{icon:"Icons/abm1.jpg",name:"Advanced Battle Magic",desc:"Friendly unit's attack and defense is increased by 20% Hero's spellpower and knowledge."},{icon:"Icons/ebm1.jpg",name:"Expert Battle Magic",desc:"Friendly unit's attack and defense is increased by 30% Hero's spellpower and knowledge."}],
-	"15":[{icon:"Icons/bpm1.jpg",name:"Basic Primal Magic",desc:"Hero can learn Tier 3 Primal spells.Primal spells gain +1 level"},{icon:"Icons/apm1.jpg",name:"Advanced Primal Magic",desc:"Hero can learn Tier 4 Primal spells.Primal spells cost -3 mana."},{icon:"Icons/epm1.jpg",name:"Expert Primal Magic",desc:"Hero can learn Tier 5 Primal spells without visiting a guild."}],
-	"16":[{icon:"Icons/bs1.jpg",name:"Basic Sorcery",desc:"Hero's spells do 10% more damage."},{icon:"Icons/as1111.jpg",name:"Advanced Sorcery",desc:"Hero's spells do 20% more damage."},{icon:"Icons/es3.jpg",name:"Expert Sorcery",desc:"Hero's spells do 30% more damage."}],
-	"17":[{icon:"Icons/bsa1.jpg",name:"Basic Summon Avatar",desc:"Grants a spell that summons an Avatar that scales with the hero's knowledge and spellpower. Each level scales more powerfully. "},{icon:"Icons/asa1.jpg",name:"Advanced Summon Avatar",desc:"Grants a spell that summons an Avatar that scales with the hero's knowledge and spellpower. Each level scales more powerfully. "},{icon:"Icons/esa1.jpg",name:"Expert Summon Avatar",desc:"Grants a spell that summons an Avatar that scales with the hero's knowledge and spellpower. Each level scales more powerfully. "}],
-	"18":[{icon:"Icons/bt1.jpg",name:"Basic Thaumaturgy",desc:"Allows the Hero to cast another spell per round. Spells cost   +300% after each use."},{icon:"Icons/at1.jpg",name:"Advanced Thaumaturgy",desc:"Allows the Hero to cast another spell per round. Spells cost   +200% after each use."},{icon:"Icons/et1.jpg",name:"Expert Thaumaturgy",desc:"Allows the Hero to cast another spell per round. Spells cost   +100% after each use."}],
-	"19":[{icon:"Icons/bd1.jpg",name:"Basic Diplomacy",desc:"Allows you to sometimes recruit neutral armies for gold instead of fighting them and adds 0% persuasion power."},{icon:"Icons/ad1.jpg",name:"Advanced Diplomacy",desc:"Allows you to sometimes recruit neutral armies for gold instead of fighting them and adds 25% persuasion power."},{icon:"Icons/ed1.jpg",name:"Expert Diplomacy",desc:"Allows you to sometimes recruit neutral armies for gold instead of fighting them and adds 50% persuasion power."}],
-	"20":[{icon:"Icons/bl111.jpg",name:"Basic Logistics",desc:"Increases Hero movement points by 10%."},{icon:"Icons/alg2.jpg",name:"Advanced Logistics",desc:"Increases Hero movement points by 15%."},{icon:"Icons/elg1.jpg",name:"Expert Logistics",desc:"Increases Hero movement points by 20%."}],
-	"21":[{icon:"Icons/bi1.jpg",name:"Basic Insight",desc:"+20% experience."},{icon:"Icons/ai1.jpg",name:"Advanced Insight",desc:"+30% experience."},{icon:"Icons/ei1.jpg",name:"Expert Insight",desc:"+40% experience."}],
-	"22":[{icon:"Icons/be1.jpg",name:"Basic Economy",desc:"Gain 500 gold daily."},{icon:"Icons/ae1.jpg",name:"Advanced Economy",desc:"Gain 1000 gold daily."},{icon:"Icons/ee1.jpg",name:"Expert Economy",desc:"Gain 1500 gold daily."}],
-	"23":[{icon:"Icons/bs11.jpg",name:"Basic Scouting:",desc:"+1 to sight radius."},{icon:"Icons/as11.jpg",name:"Advanced Scouting:",desc:"+2 to sight radius."},{icon:"Icons/es1.jpg",name:"Expert Scouting:",desc:"+3 to sight radius."}]
+    "01":[
+      {icon:"Icons/bl11.jpg",name:"Chance de base",desc:"La chance augmente de 1"},
+      {icon:"Icons/al11.jpg",name:"Chance avancée",desc:"La chance augmente de 2"},
+      {icon:"Icons/el11.jpg",name:"Chance d'expert",desc:"La chance augmente de 3"}
+    ],
+    "02":[
+      {icon:"Icons/bo1.jpg",name:"Offensive de base",desc:"Les attaques de base des créatures alliées infligent +10% de dégâts."},
+      {icon:"Icons/ao1.jpg",name:"Offensive avancée",desc:"Les attaques de base des créatures alliées infligent +15% de dégâts."},
+      {icon:"Icons/eo1.jpg",name:"Offensive d'expert",desc:"Les attaques de base des créatures alliées infligent +20% de dégâts."}
+    ],
+    "03":[
+      {icon:"Icons/bd11.jpg",name:"Défense de base",desc:"Les créatures alliées subissent -10% de dégâts des attaques de base."},
+      {icon:"Icons/ad11.jpg",name:"Défense avancée",desc:"Les créatures alliées subissent -15% de dégâts des attaques de base."},
+      {icon:"Icons/ed11.jpg",name:"Défense d'expert",desc:"Les créatures alliées subissent -20% de dégâts des attaques de base."}
+    ],
+    "04":[
+      {icon:"Icons/bb1.jpg",name:"Art de la Guerre de base",desc:"Lorsqu'une créature attend au combat, elle gagne +20% en attaque jusqu'à la fin du tour. Lorsqu'elle passe son tour, elle gagne +20% de défense jusqu'à la fin du tour."},
+      {icon:"Icons/ab1.jpg",name:"Art de la Guerre avancée",desc:"Lorsqu'une créature attend au combat, elle gagne +30% en attaque jusqu'à la fin du tour. Lorsqu'elle passe son tour, elle gagne +30% de défense jusqu'à la fin du tour."},
+      {icon:"Icons/eb1.jpg",name:"Art de la Guerre d'expert",desc:"Lorsqu'une créature attend au combat, elle gagne +40% en attaque jusqu'à la fin du tour. Lorsqu'elle passe son tour, elle gagne +40% de défense jusqu'à la fin du tour."}
+    ],
+    "05":[
+      {icon:"Icons/br11.jpg",name:"Recrutement de base",desc:"Augmente de 4 la formation des créatures de rang 1 dans tous les villes."},
+      {icon:"Icons/ar1.jpg",name:"Recrutement avancé",desc:"Augmente de 4 la formation des créatures de rang 1 et +2 à la formation des créatures de rang 2 dans tous les villes."},
+      {icon:"Icons/er1.jpg",name:"Recrutement d'expert",desc:"Augmente de 4 la formation des créatures de rang 1, +2 à la formation des créatures de rang 2 et  +1 à la formation des créatures de rang 3 dans tous les villes."}
+    ],
+    "06":[
+      {icon:"Icons/bt11.jpg",name:"Stratégie de base",desc:"Vous pouvez replacer les créatures avant le début du combat dans une zone de 2 lignes."},
+      {icon:"Icons/at11.jpg",name:"Stratégie avancée",desc:"Vous pouvez replacer les créatures avant le début du combat dans une zone de 3 lignes."},
+      {icon:"Icons/et11.jpg",name:"Stratégie d'expert",desc:"Vous pouvez replacer les créatures avant le début du combat dans une zone de 4 lignes."}
+    ],
+    "07":[
+      {icon:"Icons/bl1.jpg",name:"Commandement de base",desc:"Le moral augmente de 1."},
+      {icon:"Icons/al1.jpg",name:"Commandement avancé",desc:"Le moral augmente de 2."},
+      {icon:"Icons/el1.jpg",name:"Commandement d'expert",desc:"Le moral augmente de 3."}
+    ],
+    "08":[
+      {icon:"Icons/bs111.jpg",name:"Art du siège de base",desc:"Augmente de 50 points les dégâts de la catapulte."},
+      {icon:"Icons/as111.jpg",name:"Art du siège avancé",desc:"Augmente de 100 points les dégâts de la catapulte."},
+      {icon:"Icons/es111.jpg",name:"Art du siège d'expert",desc:"Augmente de 150 points les dégâts de la catapulte."}
+    ],
+    "09":[
+      {icon:"Icons/br1.jpg",name:"Résistance de base",desc:"Les créatures subissent -10% de dégâts magiques."},
+      {icon:"Icons/ar11.jpg",name:"Résistance avancée",desc:"Les créatures subissent -20% de dégâts magiques."},
+      {icon:"Icons/er11.jpg",name:"Résistance d'expert",desc:"Les créatures subissent -30% de dégâts magiques."}
+    ],
+    "10":[
+      {icon:"Icons/bdm1.jpg",name:"Sorts de Lumière de base",desc:"Le héros peut apprendre des sorts de lumière de rang 3. Ces sorts gagnent +1 niveau."},
+      {icon:"Icons/adm1.jpg",name:"Sorts de Lumière avancés",desc:"Le héros peut apprendre des sorts de lumière de rang 4. Ces sorts coûtent -3 de mana et gagnent +1 niveau."},
+      {icon:"Icons/edm1.jpg",name:"Sorts de Lumière d'd'expert",desc:"Le héros peut apprendre des sorts de lumière de rang 5 sans se rendre dans une guilde de mage. Ces sorts coûtent -3 de mana et gagnent +1 niveau."}
+    ],
+    "11":[
+      {icon:"Icons/bn1.jpg",name:"Sorts de Belladone de base",desc:"Le héros peut apprendre des sorts de belladone de rang 3. Ces sorts gagnent +1 niveau."},
+      {icon:"Icons/anm1.jpg",name:"Sorts de Belladone avancée",desc:"Le héros peut apprendre des sorts de belladone de rang 4. Ces sorts coûtent -3 de mana et gagnent +1 niveau."},
+      {icon:"Icons/enm1.jpg",name:"Sorts de Belladone d'expert",desc:"Le héros peut apprendre des sorts de belladone de rang 5 sans visiter de guilde. Ces sorts coûtent -3 de mana et gagnent +1 niveau."}
+    ],
+    "12":[
+      {icon:"Icons/bi11.jpg",name:"Renseignements de base",desc:"Le héros peut apprendre des sorts jusqu'au rang 3 sans avoir besoin d'apprendre l'école de magie correspondante."},
+      {icon:"Icons/ai11.jpg",name:"Renseignements avancés",desc:"Le héros peut apprendre des sorts jusqu'au rang 4 sans avoir besoin d'apprendre l'école de magie correspondante."},
+      {icon:"Icons/ei11.jpg",name:"Renseignements d'expert",desc:"Le héros peut apprendre des sorts jusqu'au rang 5 sans avoir besoin d'apprendre l'école de magie correspondante."}
+    ],
+    "13":[
+      {icon:"Icons/as1.jpg",name:"Sorts des Arcanes de base",desc:"Le héros peut apprendre des sorts des arcanes de rang 3. Ces sorts gagnent +1 niveau."},
+      {icon:"Icons/aam1.jpg",name:"Sorts des Arcanes avancée",desc:"Le héros peut apprendre des sorts des arcanes de rang 4. Ces sorts coûtent -3 de mana et gagnent +1 niveau."},
+      {icon:"Icons/eam1.jpg",name:"Sorts des Arcanes d'expert",desc:"Le héros peut apprendre des sorts des arcanes de rang 5 sans visiter de guilde. Ces sorts coûtent -3 de mana et gagnent +1 niveau."}
+    ],
+    "14":[
+      {icon:"Icons/bbm1.jpg",name:"Sorts Martiaux de base",desc:"L'attaque et la défense des créatures alliées augmentent de 10% de la puissance de sort et du savoir de leur héros."},
+      {icon:"Icons/abm1.jpg",name:"Sorts Martiaux avancée",desc:"L'attaque et la défense des créatures alliées augmentent de 20% de la puissance de sort et du savoir de leur héros."},
+      {icon:"Icons/ebm1.jpg",name:"Sorts Martiaux d'expert",desc:"L'attaque et la défense des créatures alliées augmentent de 30% de la puissance de sort et du savoir de leur héros."}
+    ],
+    "15":[
+      {icon:"Icons/bpm1.jpg",name:"Sorts Primordiaux de base",desc:"Le héros peut apprendre des sorts primordiaux de rang 3. Ces sorts gagnent +1 niveau."},
+      {icon:"Icons/apm1.jpg",name:"Sorts Primordiaux avancés",desc:"Le héros peut apprendre des sorts primordiaux de rang 4. Ces sorts coûtent -3 de mana et gagnent +1 niveau."},
+      {icon:"Icons/epm1.jpg",name:"Sorts Primordiaux d'd'expert",desc:"Le héros peut apprendre des sorts primordiaux de rang 5 sans visiter de guilde. Ces sorts coûtent -3 de mana et gagnent +1 niveau."}
+    ],
+    "16":[
+      {icon:"Icons/bs1.jpg",name:"Sorcellerie de base",desc:"+10% de dégâts magiques."},
+      {icon:"Icons/as1111.jpg",name:"Sorcellerie avancée",desc:"+20% de dégâts magiques."},
+      {icon:"Icons/es3.jpg",name:"Sorcellerie d'expert",desc:"+30% de dégâts magiques."}
+    ],
+    "17":[
+      {icon:"Icons/bsa1.jpg",name:"Invocation d'Avatar de base",desc:"Accorde un sort de combat unique. Il invoque un avatar qui évolue fortement grâce au niveau de la puissance de sorts et du savoir du héros."},
+      {icon:"Icons/asa1.jpg",name:"Invocation d'Avatar avancée",desc:"Accorde un sort de combat unique. Il invoque un avatar qui évolue fortement grâce au niveau de la puissance de sorts et du savoir du héros."},
+      {icon:"Icons/esa1.jpg",name:"Invocation d'Avatar d'expert",desc:"Accorde un sort de combat unique. Il invoque un avatar qui évolue fortement grâce au niveau de la puissance de sorts et du savoir du héros."}
+    ],
+    "18":[
+      {icon:"Icons/bt1.jpg",name:"Thaumaturgie de base",desc:"Permet au héros d'utiliser le grimoire une fois de plus par tour de combat. Les sorts coûtent 300% de mana en plus après chaque utilisation."},
+      {icon:"Icons/at1.jpg",name:"Thaumaturgie avancée",desc:"Permet au héros d'utiliser le grimoire une fois de plus par tour de combat. Les sorts coûtent 200% de mana en plus après chaque utilisation."},
+      {icon:"Icons/et1.jpg",name:"Thaumaturgie d'expert",desc:"Permet au héros d'utiliser le grimoire une fois de plus par tour de combat. Les sorts coûtent 100% de mana en plus après chaque utilisation."}
+    ],
+    "19":[
+      {icon:"Icons/bd1.jpg",name:"Diplomatie de base",desc:"Vous permet parfois de recruter des armées neutres contre de l'or au lieu de les combattre."},
+      {icon:"Icons/ad1.jpg",name:"Diplomatie avancée",desc:"Vous permet parfois de recruter des armées neutres contre de l'or au lieu de les combattre. +25 % en puissance de persuasion en diplomatie."},
+      {icon:"Icons/ed1.jpg",name:"Diplomatie d'expert",desc:"Vous permet parfois de recruter des armées neutres contre de l'or au lieu de les combattre. +50 % en puissance de persuasion en diplomatie."}
+    ],
+    "20":[
+      {icon:"Icons/bl111.jpg",name:"Logistique de base",desc:"+10% de points de mouvement sur la carte globale."},
+      {icon:"Icons/alg2.jpg",name:"Logistique avancée",desc:"+15% de points de mouvement sur la carte globale."},
+      {icon:"Icons/elg1.jpg",name:"Logistique d'expert",desc:"+20% de points de mouvement sur la carte globale."}
+    ],
+    "21":[
+      {icon:"Icons/bi1.jpg",name:"Perspicacité de base",desc:"+20% d'XP."},
+      {icon:"Icons/ai1.jpg",name:"Perspicacité avancée",desc:"+30% d'XP."},
+      {icon:"Icons/ei1.jpg",name:"Perspicacité d'expert",desc:"+40% d'XP."}
+    ],
+    "22":[
+      {icon:"Icons/be1.jpg",name:"Économie de base",desc:"Augmente de 500 les pièces d'or par jour."},
+      {icon:"Icons/ae1.jpg",name:"Économie avancée",desc:"Augmente de 1000 les pièces d'or par jour."},
+      {icon:"Icons/ee1.jpg",name:"Économie d'expert",desc:"Augmente de 1500 les pièces d'or par jour."}
+    ],
+    "23":[
+      {icon:"Icons/bs11.jpg",name:"Repérage de base",desc:"Augmente de 1 le champ de vision."},
+      {icon:"Icons/as11.jpg",name:"Repérage avancé",desc:"Augmente de 2 le champ de vision."},
+      {icon:"Icons/es1.jpg",name:"Repérage d'expert",desc:"Augmente de 3 le champ de vision."}
+    ]
+  },
+  middle: {
+    "01":[
+      {icon:"Icons/bc1.jpg",name:"Confiance bestiale",desc:"Les créatures alliées ont 1% de chances supplémentaires de réussir un coup de chance par point de chance (bonus x2 si le héros connaît :  Sorts primordiaux."},
+      {icon:"Icons/ah.jpg",name:"Toujours pile",desc:"Vous gagnez 25% d'or et de ressources en plus grâce aux piles sur la carte globale (bonus x2 si le héros connaît : Économie)."},
+      {icon:"Icons/mc.jpg",name:"L'Élu de Mearea",desc:"La chance de l'ennemi est réduite de 1 au combat."}
+    ],
+    "02":[
+      {icon:"Icons/ba.jpg",name:"Arts de Combat",desc:"Les compétences des unités alliées infligent +50% de dégâts."},
+      {icon:"Icons/a1.jpg",name:"Tir à l'Arc",desc:"Les attaques à distance et à longue portée des unités alliées infligent +15% de dégâts."},
+      {icon:"Icons/bm.jpg",name:"Marche de Bataille",desc:"Les unités alliées génèrent +1 point de concentration lorsqu'elles attaquent."}
+    ],
+    "03":[
+      {icon:"Icons/sas.jpg",name:"Boucliers et coquilles",desc:"Les créatures alliées subissent -25% de dégâts de contre-attaques."},
+      {icon:"Icons/c.jpg",name:"Couverture",desc:"Les créatures alliées subissent -20% de dégâts d'attaques à distance et à longue portée."},
+      {icon:"Icons/htm.jpg",name:"Hymne aux Martyrs",desc:"Les créatures alliées génèrent +1 point de focalisation lorsqu'elles subissent des dégâts."}
+    ],
+    "04":[
+      {icon:"Icons/mm.jpg",name:"Maîtrise du corps à corps",desc:"Augmente de 10% les dégâts infligés par les créatures alliées, et réduit de 10% les dégâts au corps à corps qu'elles subissent."},
+      {icon:"Icons/rm.jpg",name:"Maîtrise à distance",desc:"Augmente de 10% les dégâts infligés par les créatures alliées, et réduit de 10% les dégâts à distance et de longue portée qu'elles subissent."},
+      {icon:"Icons/overwatch.jpg",name:"Vigilance",desc:"Les créatures alliées passent en « Vigilance » lorsqu'elles choisissent d'attendre en combat. « Vigilance » leur permet de lancer une contre-attaque sur tout ennemi se déplaçant à portée de corps à corps."}
+    ],
+    "05":[
+      {icon:"Icons/ds.jpg",name:"Surveillance directe",desc:"Si le héros est dans une ville au début d'une semaine, la formation de toutes les créatures de cette ville augmente de 50%."},
+      {icon:"Icons/eg.jpg",name:"Gardes d'élite",desc:"L'attaque et la défense des créatures alliées de rang 1, 2 et 3 augmentent de 25% de l'attaque et de la défense de leur héros."},
+      {icon:"Icons/vet.jpg",name:"Vétérans",desc:"La formation des créatures de rang 4 dans vos villes augmente de 1."}
+    ],
+    "06":[
+      {icon:"Icons/ofa.jpg",name:"Un pour tous",desc:"Les créatures alliées gagnent +3 en attaque pour chaque ennemi proche (bonus x2 si le héros connaît : Offensive."},
+      {icon:"Icons/ep.jpg",name:"Proie facile",desc:"Chaque fois qu'un ennemi attend, augmente de 2 l'initiative des créatures alliées jusqu'à la fin du tour (ne se cumule pas)."},
+      {icon:"Icons/em.jpg",name:"Mana énergisant",desc:"+1 charge de focalisation chaque fois que votre ennemi utilise un sort."}
+    ],
+    "07":[
+      {icon:"Icons/r1.jpg",name:"Détermination",desc:"Les créatures alliées ont 1% de chances supplémentaires de jouer une fois de plus pour chaque point de moral (bonus x2 si le héros connaît : Art de la Guerre)."},
+      {icon:"Icons/hol.jpg",name:"Héros légendaire",desc:"Réduit le moral de l'ennemi de 1 en combat."},
+      {icon:"Icons/uad.jpg",name:"Des hauts et des bas",desc:"Chaque fois qu'une créature alliée déclenche un effet de moral négatif, son moral augmente de 5 jusqu'à la fin du tour suivant."}
+    ],
+    "08":[
+      {icon:"Icons/ra.jpg",name:"Assaut implacable",desc:"Augmente de 1 la vitesse et l'initiative des créatures alliées pendant un siège."},
+      {icon:"Icons/fo.jpg",name:"Éclaireurs avancés",desc:"Les dégâts à distance des créatures alliées ne sont pas réduits par les murs pendant un siège."},
+      {icon:"Icons/b.jpg",name:"Barrage",desc:"Accorde une capacité de siège unique : une fois par tour, permet d'attaquer une case et toutes ses cases adjacentes."}
+    ],
+    "09":[
+      {icon:"Icons/obs.jpg",name:"Obstruction",desc:"Les sorts ennemis coûtent 20% de mana en plus. Si vous avez débloqué une école de magie, le coût des sorts ennemis de cette école augmente de 20% supplémentaires."},
+      {icon:"Icons/res.jpg",name:"Résilience",desc:"Les créatures subissent -10% de dégâts magiques."},
+      {icon:"Icons/fm.jpg",name:"Métabolisme rapide",desc:"Tous les effets négatifs sur les créatures alliées durent 2 tours de moins (pas moins de 2)."}
+    ],
+    "10":[
+      {icon:"Icons/ssa.jpg",name:"Synergie des érudits : Arina",desc:"+4 en puissance de sorts lors du lancement de sorts de lumière (+1 pour chaque école de magie différente apprise)."},
+      {icon:"Icons/lf.jpg",name:"Focalisation lumineuse",desc:"+1 charge de focalisation au début du combat."},
+      {icon:"Icons/bs.jpg",name:"Le soleil le plus brillant",desc:"-1 niveau à tous les sorts de lumière ennemis."}
+    ],
+    "11":[
+      {icon:"Icons/ss.jpg",name:"Synergie des érudits : Naira",desc:"+4 en puissance de sorts lors du lancement de sorts de belladone (+1 pour chaque école de magie différente apprise)."},
+      {icon:"Icons/d.jpg",name:"Dissimulation",desc:"Les ennemis ne peuvent pas voir les informations détaillées sur votre armée : ils voient un nombre aléatoire de créatures aléatoires."},
+      {icon:"Icons/dn.jpg",name:"La nuit la plus sombre",desc:"-1 niveau à tous les sorts de belladone ennemis."}
+    ],
+    "12":[
+      {icon:"Icons/g.jpg",name:"Génie",desc:"Le héros monte immédiatement de niveau une seconde fois."},
+      {icon:"Icons/ast.jpg",name:"Astrologie",desc:"Le héros commence l'apprentissage de la magie neutre à des niveaux inférieurs."},
+      {icon:"Icons/ee11.jpg",name:"Œil de lynx",desc:"Au début du combat, enseigne tous les sorts que l'ennemi connaît et que le héros est capable d'apprendre."}
+    ],
+    "13":[
+      {icon:"Icons/ssd.jpg",name:"Synergie des érudits : Doreath",desc:"+4 en puissance de sorts lors du lancement de sorts des arcanes (+1 pour chaque école de magie différente apprise."},
+      {icon:"Icons/alie.jpg",name:"Toute vie est infinie",desc:"+30% de soins et de réanimation grâce aux capacités des créatures alliées et aux sorts des héros au combat (bonus x2 si le héros connaît : Invocation d'Avatar."},
+      {icon:"Icons/pt.jpg",name:"Pensée la plus pure",desc:"-1 niveau à tous les sorts des arcanes ennemis."}
+    ],
+    "14":[
+      {icon:"Icons/aod.jpg",name:"Aura de destruction",desc:"Chaque fois que le héros utilise un sort en combat, son attaque augmente de 2 jusqu'à la fin du combat."},
+      {icon:"Icons/aop.jpg",name:"Aura de protection",desc:"Chaque fois que le héros utilise un sort en combat, sa défense augmente de 2 jusqu'à la fin du combat."},
+      {icon:"Icons/aow.jpg",name:"Aura de sorcellerie",desc:"Chaque fois que le héros utilise un sort en combat, la puissance de sorts augmente de 2 jusqu'à la fin du combat."}
+    ],
+    "15":[
+      {icon:"Icons/ssh.jpg",name:"Synergie des érudits : Hksmilla",desc:"+4 en puissance des sorts lors du lancement de sorts primordiaux (+1 pour chaque école de magie différente apprise)."},
+      {icon:"Icons/pf.jpg",name:"Force primordiale",desc:"Les effets négatifs et positifs utilisés par le héros et les créatures alliées durent 1 tour supplémentaire."},
+      {icon:"Icons/st.jpg",name:"Dents acérées",desc:"-1 niveau à tous les sorts primordiaux ennemis."}
+    ],
+    "16":[
+      {icon:"Icons/sm.jpg",name:"Sorts collants",desc:"Les sorts durent 1 tour supplémentaire (bonus x2 si le héros connaît : Renseignements)."},
+      {icon:"Icons/ma.jpg",name:"Flèche magique",desc:"Accorde un nouveau sort de combat. Il inflige des dégâts magiques à une cible et ne coûte pas de mana."},
+      {icon:"Icons/re.jpg",name:"Énergie brute",desc:"+10% de dégâts magiques (bonus x2 si le héros connaît : Offensive)."}
+    ],
+    "17":[
+      {icon:"Icons/aof.jpg",name:"Avatar de la fureur",desc:"L'attaque de l'avatar augmente de 25% de la puissance de sort de son héros (bonus x2 si le héros connaît : Commandement."},
+      {icon:"Icons/aot.jpg",name:"Avatar de la ténacité",desc:"La défense de l'avatar augmente de 25% du savoir de son héros (bonus x2 si le héros connaît : Défense."},
+      {icon:"Icons/aoc.jpg",name:"Avatar de la célérité",desc:"La vitesse et l'initiative de l'avatar augmentent de 2 (bonus x2 si le héros connaît : Perspicacité."}
+    ],
+    "18":[
+      {icon:"Icons/a.jpg",name:"Antimage",desc:"Les sorts ennemis coûtent 4 de mana en plus."},
+      {icon:"Icons/vs.jpg",name:"Vaste âme",desc:"Augmente de 10% le mana restauré quotidiennement."},
+      {icon:"Icons/hm.jpg",name:"Archimage",desc:"Tous vos sorts d'écoles de magie gagnent 1 niveau."}
+    ],
+    "19":[
+      {icon:"Icons/ltl.jpg",name:"Plus grand que nature",desc:"Augmente de 25% la puissance de votre armée aux yeux des créatures neutres ; ce qui les rend plus susceptibles de vous rejoindre ou fuir (bonus x2 si le héros connaît : Art de la guerre."},
+      {icon:"Icons/e.jpg",name:"Éloquence",desc:"Réduit de 75% au coût d'une capitulation."},
+      {icon:"Icons/fh.jpg",name:"Héros du peuple",desc:"+50 % de puissance de persuasion en diplomatie avec les pelotons sur la carte globale de la faction du héros."}
+    ],
+    "20":[
+      {icon:"Icons/sp1.jpg",name:"Passages secrets",desc:"La pénalité de terrain est réduite de 50%."},
+      {icon:"Icons/sm1.jpg",name:"Montures fortes",desc:"Les sorts neutres de la carte globale coûtent -4 de mana (bonus x2 si le héros connaît : Repérage)."},
+      {icon:"Icons/cp1.jpg",name:"Planification minutieuse",desc:"Chaque jour, le héros économise 50 points de mouvement inutilisés pour le jour suivant (bonus x2 si le héros connaît : Sorts des arcanes."}
+    ],
+    "21":[
+      {icon:"Icons/enl.jpg",name:"Illumination",desc:"+10% d'XP."},
+      {icon:"Icons/ci.jpg",name:"Innovation civique",desc:"Le héros gagne +100% de points de loi (bonus x2 si le héros connaît : Commandement."},
+      {icon:"Icons/sag.jpg",name:"Sagacité",desc:"Affiche les intentions de tous les pelotons neutres situées ) [300% x champ de vision du héros] case(s) du héros sur la carte globale."}
+    ],
+    "22":[
+      {icon:"Icons/tc.jpg",name:"Percepteur d'impôts",desc:"+500 d'or par jour (bonus x2 si le héros connaît : Logistique."},
+      {icon:"Icons/s.jpg",name:"Contrebandier",desc:"+1 cristaux, gemmes ou mercure par jour (selon la faction du héros)."},
+      {icon:"Icons/mb.jpg",name:"Maître-bâtisseur",desc:"+1 de bois et de minerai par jour."}
+    ],
+    "23":[
+      {icon:"Icons/ls.jpg",name:"Vision Longue",desc:"Rayon de vision augmenté de 1. Bonus doublé si le héros connaît la chance."},
+      {icon:"Icons/fp.jpg",name:"Chemins Familier",desc:"+15% points de mouvement si le héros commence la journée dans une zone qu'il contrôle. Bonus doublé si le héros connaît l'Renseignements."},
+      {icon:"Icons/path.jpg",name:"Orientation",desc:"-50% de pénalité de terrain."}
+    ]
 	},
-
-	
-  middle: {    
-	"01":[{icon:"Icons/bc1.jpg",name:"Beastly Confidence",desc:"Friendly creatures have a 1% higher chance to land a lucky strike for each point of luck. Bonus is doubled if the hero knows Primal Magic."},{icon:"Icons/ah.jpg",name:"Always Heads",desc:"The Hero gains 25% gold and resources from piles on the map. Doubled if the Hero knows Economy."},{icon:"Icons/mc.jpg",name:"Mearea's Chosen",desc:"Enemy luck reduced by 1 in battle."}],
-	"02":[{icon:"Icons/ba.jpg",name:"Battle Arts",desc:"Friendly units' abilities deal +50% damage."},{icon:"Icons/a1.jpg",name:"Archery",desc:"Friendly units' ranged and long reach attacks deal +15% damage."},{icon:"Icons/bm.jpg",name:"Battle March",desc:"Friendly units generate +1 focus point when they attack."}],
-	"03":[{icon:"Icons/sas.jpg",name:"Shields and Shells",desc:"Friendly units take -25% damage from counter attacks."},{icon:"Icons/c.jpg",name:"Cover",desc:"Friendly creatures take -20% damage from ranged and long reach attacks."},{icon:"Icons/htm.jpg",name:"Hymn to Martyrs",desc:"Friendly units generate +1 focus point when they take damage."}],
-	"04":[{icon:"Icons/mm.jpg",name:"Melee Mastery",desc:"Friendly units deal +10% and take -10% melee damage."},{icon:"Icons/rm.jpg",name:"Ranged Mastery",desc:"Friendly units deal +10% and take -10% ranged and long reach damage."},{icon:"Icons/overwatch.jpg",name:"Overwatch",desc:"When a friendly unit waits in combat, they gain Overwatch, counterattacking any enemy unit that moves within melee range."}],
-	"05":[{icon:"Icons/ds.jpg",name:"Direct Supervision",desc:"If the Hero is in the city at the start of a week, growth of all units in that city increase by 50%."},{icon:"Icons/eg.jpg",name:"Elite Guards",desc:"Tier 1, Tier 2, and Tier 3 friendly unit's attack and defense are increased by 25% of the Hero's attack and defense."},{icon:"Icons/vet.jpg",name:"Veterans",desc:"Tier 4 units growth in your cities increase by 1."}],
-	"06":[{icon:"Icons/ofa.jpg",name:"One for All",desc:"Friendly units gain +3 attack for each enemy within melee range. Doubled if the Hero knows Offense."},{icon:"Icons/ep.jpg",name:"Easy Prey",desc:"Whenever the enemy waits, friendly units gain +2 initiative until the end of round. Doesn't stack."},{icon:"Icons/em.jpg",name:"Energizing Mana",desc:"+1 focus charge each time the enemy uses a spell."}],
-	"07":[{icon:"Icons/r1.jpg",name:"Resolve",desc:"Friendly units' chance to take an additional turn increases by 1% for each point of morale. Doubled if the Hero knows Battlecraft."},{icon:"Icons/hol.jpg",name:"Hero of Legends",desc:"Enemy morale is reduced by 1 in battle."},{icon:"Icons/uad.jpg",name:"Ups and Downs",desc:"Whenever a friendly unit triggers negative moral, its morale is increased by 5 until the end of the next round."}],
-	"08":[{icon:"Icons/ra.jpg",name:"Relentless Assault",desc:"+1 speed and initiative to friendly units during a siege."},{icon:"Icons/fo.jpg",name:"Forward Observers",desc:"Ranged damage of friendly units is not reduced during a siege."},{icon:"Icons/b.jpg",name:"Barrage",desc:"Grants a unique siege ability. Allows the catapult to attack a hex and all adjacent hexes once per round."}],
-	"09":[{icon:"Icons/obs.jpg",name:"Obstruction",desc:"Enemy spells cost 20% more mana. If the Hero knows school of magic skill, the cost of enemy spells from that school increases by an additional 20%."},{icon:"Icons/res.jpg",name:"Resilience",desc:"Friendly creatures take -10% magic damage."},{icon:"Icons/fm.jpg",name:"Fast Metabolism",desc:"All negative effects on friendly units last for 2 fewer rounds (no less than 2)."}],
-	"10":[{icon:"Icons/ssa.jpg",name:"Scholar Synergy:Arina",desc:"+4 spellpower while casting Daylight spells. Gain an additional +1 for each school of magic learned."},{icon:"Icons/lf.jpg",name:"Luminous Focus",desc:"+1 focus charge at the start of battle."},{icon:"Icons/bs.jpg",name:"Brightest Sun",desc:"-1 level to all enemy Daylight spells."}],
-	"11":[{icon:"Icons/ss.jpg",name:"Scholar Synergy:Naira",desc:"+4 spellpower when casting Nightshade spells. Gain an additional +1 for each school of magic learned."},{icon:"Icons/D.jpg",name:"Disguise",desc:"Enemies cannot see detailed information about your army. When viewed, it shows random numbers of random creatures in your faction."},{icon:"Icons/dn.jpg",name:"Darkest Night",desc:"-1 level to enemy Nightshade spells."}],
-	"12":[{icon:"Icons/g.jpg",name:"Genius",desc:"Hero immediately levels up again."},{icon:"Icons/ast.jpg",name:"Astrology",desc:"The Hero begins learning neutral magic spells at lower levels."},{icon:"Icons/ee11.jpg",name:"Eagle Eye",desc:"At the start of battle, learn all spells the enemy knows that the Hero is capable of learning."}],
-	"13":[{icon:"Icons/ssd.jpg",name:"Scholar Synergy:Doreath",desc:"+4 spellpower when casting Arcane Spells. Gain an additional +1 spellpower for every school of magic learned."},{icon:"Icons/alie.jpg",name:"All Life is Endless",desc:"+30% healing and revival from friendly unit abilities and the Hero's spells in combat. Bonus is doubled if the Hero knows Summon Avatar."},{icon:"Icons/pt.jpg",name:"Purest Thought",desc:"-1 level to all enemy Arcane Spells."}],
-	"14":[{icon:"Icons/aod.jpg",name:"Aura of Destruction",desc:"Every time the Hero uses a spell in battle, attack is increased by 2 until the end of combat."},{icon:"Icons/aop.jpg",name:"Aura of Protection",desc:"Every time the Hero uses a spell in battle, defense is increased by 2 until the end of combat."},{icon:"Icons/aow.jpg",name:"Aura of Wizardry",desc:"Every time the Hero uses a spell in battle, spellpower is increased by 2 until the end of combat."}],
-	"15":[{icon:"Icons/ssh.jpg",name:"Scholar Synergy:Hksmilla",desc:"+4 spellpower when casting Primal spells. Gain an additional +1 for each other magic school learned."},{icon:"Icons/pf.jpg",name:"Primal Force",desc:"Negative and positive effects used by the Hero and friendly units last an additional round."},{icon:"Icons/st.jpg",name:"Sharpest Teeth",desc:"-1 level to enemy Primal spells."}],
-	"16":[{icon:"Icons/sm.jpg",name:"Sticky Magic",desc:"Effects applied by the Hero last 1 more round. Doubled if the Hero knows Intelligence."},{icon:"Icons/ma.jpg",name:"Magic Arrow",desc:"Grants a new combat spell. Deals magic damage to one target and costs 0 mana."},{icon:"Icons/re.jpg",name:"Raw Energy",desc:"10% more magic damage. Doubled if the Hero knows Offense."}],
-	"17":[{icon:"Icons/aof.jpg",name:"Avatar of Fury",desc:"Avatar's attack is increased by 25% of the Hero's spellpower. Doubled if the Hero knows Leadership."},{icon:"Icons/aot.jpg",name:"Avatar of Toughness",desc:"Avatar's defense is increased by 25% of the Hero's Knowledge. Doubled if the Hero knows Defense."},{icon:"Icons/aoc.jpg",name:"Avatar of Celerity",desc:"Avatar's speed and initiative is increased by 2. Doubled if the Hero knows Insight."}],
-	"18":[{icon:"Icons/a.jpg",name:"Antimage",desc:"Enemy spells cost +4 mana."},{icon:"Icons/vs.jpg",name:"Vast Soul",desc:"10% mana restored daily."},{icon:"Icons/hm.jpg",name:"Archmage",desc:"All your magic school spells gain +1 level."}],
-	"19":[{icon:"Icons/ltl.jpg",name:"Larger than Life",desc:"25% to your army power in the eyes of neutral units which makes them more likely to join or flee. Doubled if the Hero knows Battlecraft."},{icon:"Icons/e.jpg",name:"Eloquence",desc:"-75% to the cost of surrender."},{icon:"Icons/fh.jpg",name:"Folk Hero",desc:"+50 persuasion power in diplomacy with units from the Hero's faction on the global map."}],
-	"20":[{icon:"Icons/sp1.jpg",name:"Secret Passages",desc:"Terrain penalty reduced by 50%."},{icon:"Icons/sm1.jpg",name:"Strong Mounts",desc:"Neutral global spells cost -4 mana. Doubled if the hero knows Scouting."},{icon:"Icons/cp1.jpg",name:"Careful Planning",desc:"Every day, the Hero saves up 50 used movement points for the next day. Bonus is doubled if the Hero knows Arcane Magic."}],
-	"21":[{icon:"Icons/enl.jpg",name:"Enlightenment",desc:"Gain +10% more experience."},{icon:"Icons/ci.jpg",name:"Civic Innovation",desc:"The hero gains +100% law points. Bonus is doubled if the Hero knows Leadership."},{icon:"Icons/sag.jpg",name:"Sagacity",desc:"Shows the intentions of all neutral squads within 21 squares of the Hero."}],
-	"22":[{icon:"Icons/tc.jpg",name:"Tax Collector",desc:"+500 gold daily. Doubled if the Hero knows Logistics."},{icon:"Icons/s.jpg",name:"Smuggler",desc:"+1 crystal, gem or mercury, depending on the Hero's faction."},{icon:"Icons/mb.jpg",name:"Master Builder",desc:"+1 wood and ore daily."}],
-	"23":[{icon:"Icons/ls.jpg",name:"Long-Sight",desc:"Sight radius increased by 1. Doubled if the Hero knows Luck."},{icon:"Icons/fp.jpg",name:"Familiar Paths",desc:"+15% movement points if the hero starts the day in an area they control. Doubled if the Hero knows Intelligence."},{icon:"Icons/path.jpg",name:"Pathfinding",desc:"-50% terrain penalty."}]
-
-	},
-  inner:  {    
-	"01":[{icon:"Icons/lh.jpg",name:"Lucky Hit",desc:"When a friendly unit hits with a luck strike, enemies do not counter attack."},{icon:"Icons/lst.jpg",name:"Lightning Strikes Twice",desc:"Spells can also land a lucky strike, dealing 150% damage. The chance increases by 5% every point of luck."},{icon:"",name:"Inner 01 C",desc:"Edit me"}],
-	"02":[{icon:"Icons/sb.jpg",name:"Shadow Blades",desc:"Friendly units deal +1 damage. Doubled if the Hero knows Nightshade Magic."},{icon:"Icons/uf.jpg",name:"Unstoppable Force",desc:"Friendly creatures ignore 10% of the target's defense when dealing normal damage, including abilities."}],
-	"03":[{icon:"Icons/ta.jpg",name:"Territorial Advantage",desc:"When fighting in an area the Hero controls, each stack in the army gains 10% temporary units at the start of battle. Bonus is doubled if the Hero knows Diplomacy."},{icon:"Icons/f.jpg",name:"Firmness",desc:"Friendly creatures ignore 10% of the attacker's attack when taking normal damage, including abilities."}],
-	"04":[{icon:"Icons/bf.jpg",name:"Battle Focus",desc:"Generates +1 focus charge at the start of each round."},{icon:"Icons/ps.jpg",name:"Preemptive Strike",desc:"When a friendly unit skips a turn, they gain Preemptive Strike, allowing them to counterattack before the enemy's attack."}],
-	"05":[{icon:"Icons/relo.jpg",name:"Relocation",desc:"Grants a new global map spell. Allows interaction with any controlled city once a day, enabling the transfer of units to or from that city."},{icon:"Icons/str.jpg",name:"Serious Training",desc:"Friendly units' HP increase by 2."}],
-	"06":[{icon:"Icons/afo.jpg",name:"All for One",desc:"Friendly units gain +3 defense for each ally within melee range. Doubled if the Hero knows Defense."},{icon:"Icons/rm1.jpg",name:"Riposte Mastery",desc:"When a friendly unit kills an enemy with a counter attack, their counterattacks are refreshed."}],
-	"07":[{icon:"Icons/wsns.jpg",name:"Where Sun Never Sets",desc:"Attack, defense, spellpower and sight radius are increased by 3 when in an area you do not control. Bonus is doubled if the Hero knows Daylight Magic."},{icon:"Icons/m.jpg",name:"March!",desc:"Friendly units' initiative is increased by 1."}],
-	"08":[{icon:"Icons/pha.jpg",name:"Phalanx",desc:"Defender's Towers deal 50% damage to friendly units during the siege."},{icon:"Icons/tun.jpg",name:"Tunnelling",desc:"Grants a unique siege ability. Allows teleportation to friendly unit for up to 3 hexes per round."}],
-	"09":[{icon:"Icons/ha.jpg",name:"Hindrance Aura",desc:"During the Battle, enemy loses 1 focus charge at the start of each round."},{icon:"Icons/ms.jpg",name:"Magic Supression",desc:"Grants a new ability to. It kills the target summoned creature or all temporary units in a chosen stack"}],
-	"10":[{icon:"Icons/dt.jpg",name:"Daylight Teachings",desc:"+1 level to all Daylight spells."},{icon:"Icons/sol.jpg",name:"Speed of Light",desc:"+10 movement points. Doubled if the Hero knows Logistics."}],
-	"11":[{icon:"Icons/nt.jpg",name:"Nightshade Teachings",desc:"+1 level to all Nightshade Spells."},{icon:"Icons/hotw.jpg",name:"Hour of the Wolf",desc:"-15% attack and defense to enemy creatures. Doubled if the Hero knows Resistance."}],
-	"12":[{icon:"Icons/rc.jpg",name:"Rhythmic Cadence",desc:"+25% maximum mana. Doubled if the Hero knows Sorcery."},{icon:"Icons/rom.jpg",name:"Rite of Magic",desc:"Grants a new global spell. Allows the Hero to convert all movement points into mana."}],
-	"13":[{icon:"Icons/at.jpg",name:"Arcane Teachings",desc:"+1 level to all Arcane Spells."},{icon:"Icons/mf.jpg",name:"Mana Flex",desc:"Spells cost -2 mana."}],
-	"14":[{icon:"Icons/bma.jpg",name:"Battle Mage's Authority",desc:"Friendly units' attack is increased by 20% of the Hero's spellpower. Doubled if the Hero knows Sorcery."},{icon:"Icons/mpa.jpg",name:"Mage Protector's Authority",desc:"Friendly units' defense is increased by 20% of the Hero's knowledge. Doubled if the Hero knows Resistance."}],
-	"15":[{icon:"Icons/pt1.jpg",name:"Primal Teachings",desc:"+1 level to all Primal skills."},{icon:"Icons/cr.jpg",name:"Chaos Reigns",desc:"The Hero and friendly units deal +50% more damage with lucky strikes. Bonus is doubled if the Hero knows Battle Magic."}],
-	"16":[{icon:"Icons/pe.jpg",name:"Piercing Spells",desc:"Offensive spells ignore 15% of the target's resistance."},{icon:"Icons/hm.jpg",name:"High Mage",desc:"All your magic school spells gain 1 level."}],
-	"17":[{icon:"Icons/rw.jpg",name:"Reality Wardens",desc:"Friendly units do 100% more damage to summoned enemy units."},{icon:"Icons/tnil.jpg",name:"Their Name is Legion",desc:"Friendly unit abilities summon 50% more units."}],
-	"18":[{icon:"Icons/pi.jpg",name:"Practical Incantations",desc:"Heroic Strike deals +20 damage."},{icon:"Icons/as.jpg",name:"Ancient Scrolls",desc:"Adds all Tier 1 spells to your spellbook."}],
-	"19":[{icon:"Icons/aotd.jpg",name:"Art of the Deal",desc:"Squads on the global map take -15% gold to join. Doubled if the Hero knows Economics."},{icon:"Icons/va.jpg",name:"Vagrant Army",desc:"Neutral units gain 100% of the Hero's attack and defense as a bonus when in their army."}],
-	"20":[{icon:"Icons/lab.jpg",name:"Leaps and Bounds",desc:"The Hero restores 10 movement points after each victory in battle."},{icon:"Icons/btt.jpg",name:"Back to Town!",desc:"Grants a new global spell. Teleports the Hero to the nearest friendly town. All remaining movement points are lost."}],
-	"21":[{icon:"Icons/som.jpg",name:"Scholar of Magic",desc:"Allows heroes to teach each other spells. The exchange of knowledge occurs on contact. Only spells that the other party can learn are taught."},{icon:"Icons/ec.jpg",name:"Endless Charisma",desc:"+1 attack, defense, spellpower, and knowledge. Doubled if the Hero knows Tactics."}],
-	"22":[{icon:"Icons/e1.jpg",name:"Experimenter",desc:"+5 alchemist dust daily. Doubled if the Hero knows Insight."},{icon:"Icons/m1.jpg",name:"Merchant",desc:"The Hero counts as an additional market place when calculating trade prices."}],
-	"23":[{icon:"Icons/v.jpg",name:"Visions",desc:"Shows the exact army composition of any enemy within [300% x Hero sight radius] squares of the Hero."},{icon:"Icons/r.jpg",name:"Reconnaissance",desc:"Removes the fog of war within [200% x Hero radius sight] of the Hero each morning."}]}
-
+  inner: {
+    "01":[
+      {icon:"Icons/lh.jpg",name:"Coup de chance",desc:"Chaque fois que des créatures alliées réussisent un coup de chance, les ennemis ne contre-attaquent pas."},
+      {icon:"Icons/lst.jpg",name:"La foudre frappe deux fois",desc:"Les sorts peuvent également réussir un coup de chance et infliger 150% de dégâts, avec 5% de chances supplémentaires pour chaque point de chance."},
+    ],
+    "02":[
+      {icon:"Icons/sb.jpg",name:"Lames d'ombre",desc:"Les créatures alliées infligent +1 dégât (bonus x2 si le héros connaît : Sorts de belladone)."},
+      {icon:"Icons/uf.jpg",name:"Force imparable",desc:"Les créatures ignorent 10% de la défense de la cible lorsqu'elles infligent des dégâts normaux, y compris des capacités."}
+    ],
+    "03":[
+      {icon:"Icons/ta.jpg",name:"Avantage territorial",desc:"Quand le héros combat dans une zone qu'il contrôle, chaque peloton de l'armée du héros gagne 10% d'unités temporaires au début du combat (bonus x2 si le héros connaît : Diplomatie."},
+      {icon:"Icons/f.jpg",name:"Fermeté",desc:"Les créatures alliées ignorent 10% de l'attaque de l'attaquant lorsqu'elles subissent des dégâts normaux, y compris des capacités."}
+    ],
+    "04":[
+      {icon:"Icons/bf.jpg",name:"Concentration de combat",desc:"Génère 1 charge de focalisation au début de chaque tour de combat."},
+      {icon:"Icons/ps.jpg",name:"Frappe préventive",desc:"Les créatures alliées se préparent à lancer une frappe préventive lorsqu'elles passent leur tour. Cela leur permet de lancer une contre-attaque avant l'assaut ennemi."}
+    ],
+    "05":[
+      {icon:"Icons/relo.jpg",name:"Transfert",desc:"Accorde un nouveau sort de carte globale : permet d'interagir une fois pas jour avec n'importe quelle ville contrôlée, permettant le transfert de créatures vers ou depuis cette ville."},
+      {icon:"Icons/str.jpg",name:"Entraînement intense",desc:"Augmente de 2 les PV des créatures alliées."}
+    ],
+    "06":[
+      {icon:"Icons/afo.jpg",name:"Tous pour un",desc:"Les créatures alliées reçoivent +3 en défense pour chaque allié proche (bonus x2 si le héros connaît : Défense."},
+      {icon:"Icons/rm1.jpg",name:"Maîtrise de la riposte",desc:"Chaque fois qu'une créature alliée élimine un ennemi avec une contre-attaque, ses contre-attaques se rechargent."}
+    ],
+    "07":[
+      {icon:"Icons/wsns.jpg",name:"Où le soleil ne se couche jamais",desc:"Augmente l'attaque, la défense et la puissance de sorts de 3 et le champ de vision de 3 dans une zone que vous ne contrôlez pas (bonus x2 si le héros connaît : Sorts de lumière."},
+      {icon:"Icons/m.jpg",name:"En avant !",desc:"L'initiative des créatures alliées augmente de 1."}
+    ],
+    "08":[
+      {icon:"Icons/pha.jpg",name:"Bataillon",desc:"Réduit de 50% les dégâts des tours du défenseur sur les créatures alliées pendant un siège."},
+      {icon:"Icons/tun.jpg",name:"Percée souterraine",desc:"Accorde une capacité de siège unique : permet de téléporter une créature alliée ciblée sur un maximum de 3 cases, une fois par tour."}
+    ],
+    "09":[
+      {icon:"Icons/ha.jpg",name:"Aura d'entrave",desc:"Pendant le combat, l'ennemi perd 1 charge de focalisation au début de chaque tour."},
+      {icon:"Icons/ms.jpg",name:"Suppression magique",desc:"Accorde une nouvelle capacité : élimine la créature invoquée ciblée ou toutes les unités temporaires d'un peloton en particulier."}
+    ],
+    "10":[
+      {icon:"Icons/dt.jpg",name:"Enseignements de la lumière",desc:"+1 niveau à tous les sorts de lumière."},
+      {icon:"Icons/sol.jpg",name:"Vitesse de la lumière",desc:"+10 points de mouvement (bonus x2 si le héros connaît : Logistique."}
+    ],
+    "11":[
+      {icon:"Icons/nt.jpg",name:"Enseignements sur la belladone",desc:"+1 niveau à tous les sorts de belladone."},
+      {icon:"Icons/hotw.jpg",name:"L'heure du loup",desc:"-15% en attaque et en défense des créatures ennemies (bonus x2 si le héros connaît : Résistance."}
+    ],
+    "12":[
+      {icon:"Icons/rc.jpg",name:"Cadence rythmique",desc:"Augmente la limite de mana de 25% (bonus x2 si le héros connaît : Sorcellerie."},
+      {icon:"Icons/rom.jpg",name:"Rite magique",desc:"Accorde un nouveau sort de carte globale : permet au héros de convertir les points de mouvement en mana."}
+    ],
+    "13":[
+      {icon:"Icons/at.jpg",name:"Enseignements des arcanes",desc:"+1 niveau à tous les sorts des arcanes."},
+      {icon:"Icons/mf.jpg",name:"Flexibilité du mana",desc:"Utiliser des sorts coûte 2 de mana en moins."}
+    ],
+    "14":[
+      {icon:"Icons/bma.jpg",name:"Pouvoir du mage guerrier",desc:"L'attaque des créatures alliées augmente de 20% de la puissance de sorts de leur héros (bonus x2 si le héros connaît : Sorcellerie."},
+      {icon:"Icons/mpa.jpg",name:"Pouvoir du mage protecteur",desc:"La défense des créatures alliées augmente de 20% du savoir de leur héros (bonus x2 si le héros connaît : Résistance."}
+    ],
+    "15":[
+      {icon:"Icons/pt1.jpg",name:"Enseignements primordiaux",desc:"Augmente de 1 le niveau de tous les sorts primordiaux."},
+      {icon:"Icons/cr.jpg",name:"Règne du chaos",desc:"Le héros et les créatures alliées infligent 50% de dégâts supplémentaires avec les coups de chance (bonus x2 si le héros connaît : Sorts martiaux."}
+    ],
+    "16":[
+      {icon:"Icons/pe.jpg",name:"Sorts perforants",desc:"Les sorts offensifs ignorent 15% de la résistance magique de la cible."},
+      {icon:"Icons/hm.jpg",name:"Haut Mage",desc:"Tous vos sorts d'école de magie gagnent 1 niveau."}
+    ],
+    "17":[
+      {icon:"Icons/rw.jpg",name:"Gardiens de la réalité",desc:"Les créatures alliées infligent +100% de dégâts aux créatures ennemies invoquées."},
+      {icon:"Icons/tnil.jpg",name:"Leur nom est légion",desc:"Augmente de 50 % la quantité de créatures invoquées par les capacités des créatures alliées."}
+    ],
+    "18":[
+      {icon:"Icons/pi.jpg",name:"Incantations pratiques",desc:"Coup Héroïque inflige +20 de dégâts."},
+      {icon:"Icons/as.jpg",name:"Parchemins anciens",desc:"Ajoute tous les sorts de rang 1 à votre grimoire."}
+    ],
+    "19":[
+      {icon:"Icons/aotd.jpg",name:"L'art de la négociation",desc:"Les pelotons sur la carte globale demandent 15% d'or en moins pour vous rejoindre (bonus x2 le héros connaît : Économie."},
+      {icon:"Icons/va.jpg",name:"Armée vagabonde",desc:"Les créatures neutres ont un bonus de 100% de l'attaque et de la défense du héros lorsqu'elles sont dans son armée."}
+    ],
+    "20":[
+      {icon:"Icons/lab.jpg",name:"Sauts et bonds",desc:"Le héros restaure 10 points de mouvement après chaque victoire au combat."},
+      {icon:"Icons/btt.jpg",name:"Retour en ville !",desc:"Accorde un nouveau sort de carte globale. Il téléporte le héros dans la ville la plus proche qu'il contrôle. Tous les points de mouvement restants sont perdus."}
+    ],
+    "21":[
+      {icon:"Icons/som.jpg",name:"Érudit de la magie",desc:"Permet aux héros de s'enseigner mutuellement des sorts. L'échange de connaissances se fait au contact. Seuls les sorts que l'autre partie est capable d'apprendre sont enseignés."},
+      {icon:"Icons/ec.jpg",name:"Charisme infini",desc:"+1 en attaque, défense, puissance de sorts et savoir (bonus x2 si le héros connaît : Stratégie."}
+    ],
+    "22":[
+      {icon:"Icons/e1.jpg",name:"Alchimiste",desc:"+5 de poussière alchimique par jour (bonus x2 si le héros connaît : Perspicacité."},
+      {icon:"Icons/m1.jpg",name:"Marchand",desc:"Le héros compte comme un marché supplémentaire lors du calcul des prix de transaction."}
+    ],
+    "23":[
+      {icon:"Icons/v.jpg",name:"Visions",desc:"Montre la composition exacte de toute armée ennemie dans un rayon de [300% x rayon de vision du héros] cases autour du héros."},
+      {icon:"Icons/r.jpg",name:"Reconnaissance",desc:"Supprime le brouillard de guerre dans un rayon de [200% x rayon de vision du héros] autour du héros chaque matin."}
+    ]
+  },
 
 };
 
@@ -720,17 +970,17 @@ function applyRace(raceName){
 
   // Define subclasses per race
   const subclassOptions = {
-	Temple: ['Swashbuckler', 'Paragon', 'Grand Inquisitor', 'Ascendent'],
-	Schism: ['Unbound', 'Unfeeling', 'Unstoppable', 'Unfathomable'],
-	Necropolis: ['Harbinger of Doom', 'Walking Rot', 'Soul Weaver', 'Chronomancer'],
-	Dungeon: ["Balthalzar's Bodyguard", "Silvertongue's Envoy", "Amelchia's Heir", 'Great Merchant'],
+	Temple: ['Bretteur', 'Parangon', 'Grand Inquisiteur', 'Ascendant'],
+	Schism: ['Débridé', 'Insensible', 'Imparable', 'Insondable'],
+	Necropolis: ['Héraut du destin', 'Pourriture ambulante', 'Tisse-âme', 'Chronomancien'],
+	Dungeon: ["Garde du corps de Balthalzar", "Envoyé de Silvertongue", "Héritier d'Amelchia", 'Grand Marchand'],
     Hive: ['TBD', 'TBD', 'TBD'],
     Sylvan: ['TBD', 'TBD', 'TBD']
   };
 
   function updateSubclassOptions(race) {
     // Clear current options
-    subclassSelect.innerHTML = '<option value="">— Select —</option>';
+    subclassSelect.innerHTML = '<option value="">— Sélectionner —</option>';
 
     if (subclassOptions[race]) {
       subclassOptions[race].forEach(sub => {
@@ -755,28 +1005,28 @@ function applyRace(raceName){
 // Map subclass names to arrays of outer skill IDs (e.g. outer10 = sector 10)
 const subclassHighlights = {
 Temple: {
-  Swashbuckler: ["outer12", "outer07", "outer01", "outer11", "outer2"],
-  Paragon: ["outer04", "outer10", "outer19", "outer17", "outer06"],
-  "Grand Inquisitor": ["outer13", "outer14", "outer03", "outer21", "outer23"],
-  Ascendent: ["outer22", "outer20", "outer15", "outer09", "outer16"]
+  "Bretteur": ["outer12", "outer07", "outer01", "outer11", "outer2"],
+  "Parangon": ["outer04", "outer10", "outer19", "outer17", "outer06"],
+  "Grand Inquisiteur": ["outer13", "outer14", "outer03", "outer21", "outer23"],
+  "Ascendant": ["outer22", "outer20", "outer15", "outer09", "outer16"]
 },
 Schism: {
-  Unbound: ["outer10", "outer07", "outer02", "outer23", "outer16"],
-  Unfeeling: ["outer19", "outer22", "outer12", "outer11", "outer09"],
-  Unstoppable: ["outer14", "outer04", "outer21", "outer15", "outer06"],
-  Unfathomable: ["outer13", "outer03", "outer20", "outer01", "outer17"]
+  "Débridé": ["outer10", "outer07", "outer02", "outer23", "outer16"],
+  "Insensible": ["outer19", "outer22", "outer12", "outer11", "outer09"],
+  "Imparable": ["outer14", "outer04", "outer21", "outer15", "outer06"],
+  "Insondable": ["outer13", "outer03", "outer20", "outer01", "outer17"]
 },
 Necropolis: {
-  "Harbinger of Doom": ["outer03", "outer01", "outer15", "outer23", "outer16"],
-  "Walking Rot": ["outer19", "outer12", "outer11", "outer09", "outer06"],
-  "Soul Weaver": ["outer13", "outer04", "outer21", "outer20", "outer17"],
-  Chronomancer: ["outer14", "outer10", "outer22", "outer02", "outer06"]
+  "Héraut du destin": ["outer03", "outer01", "outer15", "outer23", "outer16"],
+  "Pourriture ambulante": ["outer19", "outer12", "outer11", "outer09", "outer06"],
+  "Tisse-âme": ["outer13", "outer04", "outer21", "outer20", "outer17"],
+  "Chronomancien": ["outer14", "outer10", "outer22", "outer02", "outer06"]
 },
 Dungeon: {
-  "Balthalzar's Bodyguard": ["outer19", "outer12", "outer07", "outer11", "outer02"],
-  "Silvertongue's Envoy": ["outer10", "outer03", "outer01", "outer23", "outer16"],
-  "Amelchia's Heir": ["outer04", "outer17", "outer06", "outer21", "outer15"],
-  "Great Merchant": ["outer13", "outer14", "outer22", "outer20", "outer09"]
+  "Garde du corps de Balthalzar": ["outer19", "outer12", "outer07", "outer11", "outer02"],
+  "Envoyé de Silvertongue": ["outer10", "outer03", "outer01", "outer23", "outer16"],
+  "Héritier d'Amelchia": ["outer04", "outer17", "outer06", "outer21", "outer15"],
+  "Grand Marchand": ["outer13", "outer14", "outer22", "outer20", "outer09"]
 },
  Hive: {
     TBD: ["outer03", "outer08", "outer12", "outer17", "outer22"],
@@ -823,6 +1073,4 @@ subclassSelect.addEventListener('change', e => {
 raceSelect.addEventListener('change', () => clearHighlights());
 </script>
 </body>
-
 </html>
-
